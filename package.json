@@ -1,0 +1,27 @@
+{
+  "name": "terrible-meme-bot",
+  "version": "0.0.1",
+  "description": "A terrible bot for discord",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alex-CD/terrible-meme-bot.git"
+  },
+  "keywords": [
+    "discord",
+    "terrible"
+  ],
+  "author": "Alex Clarke",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/Alex-CD/terrible-meme-bot/issues"
+  },
+  "homepage": "https://github.com/Alex-CD/terrible-meme-bot#readme",
+  "dependencies": {
+    "discord-akairo": "^8.0.0",
+    "discord.js": "^12.1.1"
+  }
+}
