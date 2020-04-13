@@ -5,7 +5,6 @@ const Router = require('./commandRouter');
 var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX };
 
 var router = new Router(settings);
-
 client.once('ready', () => {
     console.log('Connected');
 });

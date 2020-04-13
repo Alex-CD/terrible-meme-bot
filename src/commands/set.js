@@ -3,6 +3,10 @@ class Set {
         this.command = "set"
     }
 
+    run(command, message){
+
+    }
+
 
 }
 
