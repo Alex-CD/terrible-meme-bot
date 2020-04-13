@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/Alex-CD/terrible-meme-bot#readme",
   "dependencies": {
-    "discord-akairo": "^8.0.0",
     "discord.js": "^12.1.1"
   }
 }

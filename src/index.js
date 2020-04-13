@@ -1,21 +1,22 @@
-const { AkairoClient, CommandHandler } = require('discord-akairo');
+const Discord = require('discord.js');
+const client = new Discord.Client();
 
-class memeClient extends AkairoClient {
-    constructor() {
-        super({
-            // Akairo options
-        }, {
-            // Discord.js options
-        });
+var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX };
 
-        this.commandHandler = new CommandHandler(this, {
-            directory: './src/commands/',
-            prefix: '!'
-        });
+console.log(process.env.DISCORD_TOKEN);
+client.once('ready', () => {
+    console.log('Ready!');
+});
 
-        this.commandHandler.loadAll();
-    }
-}
+client.login(process.env.DISCORD_TOKEN);
 
-const client = new memeClient();
-client.login('NjkzODM4NzM5NTUzOTEwODIw.XoC7zw.dCQ2yecsMNWCKL0HIfrMMi2gAS4');
+client.on('message', message => {
+    // Ignore messages that don't start with a prefix, or that come from another bot
+    console.log("message");
+    if (!message.content.startsWith(settings.prefix) || message.author.bot) return;
+
+    console.log("Command received: " + message.content.slice(1));
+});
+
+
+
