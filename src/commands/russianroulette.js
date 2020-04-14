@@ -6,7 +6,6 @@ class RussianRoulette {
     }
 
     async run(command, message){
-        //var voiceChannels = message.guild.channels.cache.filter((channel)=>{ return channel.type == "voice"; });
         
         var channel = message.guild.member(message.author).voice.channel;
 
