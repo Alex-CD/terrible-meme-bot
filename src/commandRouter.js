@@ -1,11 +1,12 @@
 const Ping = require('./commands/ping');
 const Set = require('./commands/set');
+const RussianRoulette = require('./commands/russianroulette');
 
 class commandParser {
 
     constructor(settings) {
         this.settings = settings;
-        this.commands = [new Ping(), new Set()];
+        this.commands = [new Ping(), new Set(), new RussianRoulette()];
     }
 
     route(message) {

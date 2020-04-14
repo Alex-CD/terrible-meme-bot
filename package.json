@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Alex-CD/terrible-meme-bot#readme",
   "dependencies": {
-    "discord.js": "^12.1.1"
+    "discord.js": "^12.1.1",
+    "random": "^2.2.0"
   }
 }
