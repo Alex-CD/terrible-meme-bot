@@ -6,7 +6,8 @@ class RussianRoulette {
     }
 
     async run(command, message){
-
+        //var voiceChannels = message.guild.channels.cache.filter((channel)=>{ return channel.type == "voice"; });
+        
         var channel = message.guild.member(message.author).voice.channel;
 
         if(!channel){
@@ -14,9 +15,10 @@ class RussianRoulette {
             return;
         }
 
-        var userToDisconnect = message.guild.member(channel.members.keyArray()[random.int(0, users.length - 1)]);
+        var users = channel.members.keyArray();
+        var userToDisconnect = message.guild.member(users[random.int(0, users.length - 1)]);
 
-        await userToDisconnect.voice.setChannel(null, "Failed the russian roulette.");
+        await userToDisconnect.voice.setChannel(null,"User failed the russian roulette");
     }
 }
 
