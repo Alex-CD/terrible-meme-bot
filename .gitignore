@@ -1,3 +1,7 @@
+# Audio files for testing
+sounds.json
+audio/
+
 # Logs
 logs
 *.log
