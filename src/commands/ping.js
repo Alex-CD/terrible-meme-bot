@@ -1,6 +1,6 @@
 class Ping {
     constructor(){
-        this.command = "ping";
+        this.aliases = ["ping"];
     }
 
     run(command, message){

@@ -2,7 +2,7 @@ var random = require('random');
 
 class RussianRoulette {
     constructor(){
-        this.command = "russianroulette";
+        this.aliases = ["russianroulette", "rr"];
     }
 
     async run(command, message){

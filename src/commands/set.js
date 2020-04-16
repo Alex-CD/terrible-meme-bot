@@ -1,6 +1,6 @@
 class Set {
     constructor(){
-        this.command = "set"
+        this.aliases = ["set"]
     }
 
     run(command, message){
