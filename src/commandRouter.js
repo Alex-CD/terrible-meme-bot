@@ -1,15 +1,18 @@
 const Ping = require('./commands/ping');
 const Set = require('./commands/set');
+
 const RussianRoulette = require('./commands/russianroulette');
+const PlayLocal = require('./commands/playLocal');
 
 class commandParser {
 
-    constructor(settings, voiceConnections) {
+    constructor(settings) {
         this.settings = settings;
         this.commands = [
             new Ping(),
             new Set(),
-            new RussianRoulette()];
+            new RussianRoulette(),
+            new PlayLocal()];
     }
 
     route(message) {
@@ -19,12 +22,11 @@ class commandParser {
         var command = message.content.split(' ')[0];
         var trimmedCommand = this.trimCommand(this.removeSpaces(message.content));
 
-    
+
+        // Loop through commands, loop through command aliases to try to match requested
         for (var c = 0; c < this.commands.length; c++) {
             for (var a = 0; a < this.commands[c].aliases.length; a++) {
-                console.log(command);
                 if (command == this.settings.prefix + this.commands[c].aliases[a]) {
-                    console.log(this.commands[c].aliases.length + this.commands[c].aliases[a]);
                     this.commands[c].run(trimmedCommand, message);
                 }
             }

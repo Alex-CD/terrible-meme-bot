@@ -1,4 +1,5 @@
 var random = require('random');
+const bot = require('../botUtils');
 
 class RussianRoulette {
     constructor(){
@@ -8,6 +9,8 @@ class RussianRoulette {
     async run(command, message){
         
         var channel = message.guild.member(message.author).voice.channel;
+
+        console.log(bot.isBotInUsersChannel(message));
 
         if(!channel){
             await message.channel.send("You need to be connected to a voice channel to use this command.");
