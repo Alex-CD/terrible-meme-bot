@@ -1,6 +1,6 @@
 const Ping = require('./commands/ping');
 const Set = require('./commands/set');
-
+const Stop = require('./commands/stop');
 const RussianRoulette = require('./commands/russianroulette');
 const PlayLocal = require('./commands/playLocal');
 
@@ -12,7 +12,8 @@ class commandParser {
             new Ping(),
             new Set(),
             new RussianRoulette(),
-            new PlayLocal()];
+            new PlayLocal(),
+            new Stop()];
     }
 
     route(message) {
