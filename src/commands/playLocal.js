@@ -5,7 +5,7 @@ const bot = require('../botUtils');
 
 class PlayLocal {
     constructor() {
-        this.aliases = ["v", "hv"];
+        this.aliases = ["v"];
         this.audioFiles = new Map();
         this.loadAudioFiles();
     }
@@ -15,6 +15,12 @@ class PlayLocal {
         if(command == "help"){
             this.printCommands(message);
             return;
+        }
+
+        if(command == "reload"){
+            this.audioFiles.clear();
+            this.loadAudioFiles();
+            message.channel.send("Audio files regenerated.");
         }
 
         if (!bot.isUserConnected(message)) {
@@ -39,13 +45,13 @@ class PlayLocal {
         var toPlay = "./audio/" + command + "/" + requestedFiles[random.int(0, requestedFiles.length - 1)];
         var dispatcher = await connection.play(toPlay);
 
-        console.log(toPlay);!
+        console.log(toPlay);
         
         dispatcher.on('finish', () => {
             dispatcher.destroy();
         });
 
-
+        message.delete();
     }
 
     loadAudioFiles() {
