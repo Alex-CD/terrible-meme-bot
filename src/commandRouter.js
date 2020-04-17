@@ -3,6 +3,7 @@ const Set = require('./commands/set');
 const Stop = require('./commands/stop');
 const RussianRoulette = require('./commands/russianroulette');
 const PlayLocal = require('./commands/playLocal');
+const Restart = require('./commands/restart');
 
 class commandParser {
 
@@ -13,7 +14,8 @@ class commandParser {
             new Set(),
             new RussianRoulette(),
             new PlayLocal(),
-            new Stop()];
+            new Stop(),
+            new Restart()];
     }
 
     route(message) {
