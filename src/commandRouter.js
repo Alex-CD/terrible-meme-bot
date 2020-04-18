@@ -5,6 +5,7 @@ const RussianRoulette = require('./commands/russianroulette');
 const PlayLocal = require('./commands/playLocal');
 const Restart = require('./commands/restart');
 const Play = require('./commands/play');
+const Roll = require('./commands/roll');
 
 class commandParser {
 
@@ -17,7 +18,8 @@ class commandParser {
             new PlayLocal(),
             new Stop(),
             new Restart(),
-            new Play()];
+            new Play(),
+            new Roll()];
     }
 
     route(message) {
