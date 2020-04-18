@@ -1,13 +1,12 @@
-class Stop {
+class Ping {
     constructor(){
-        this.aliases = ["stop"]
+        this.aliases = ["ping"];
     }
 
     run(command, message){
-
+        var diff = Date.now() - message.createdAt;
+        message.channel.send("Pong: " + diff + "ms");
     }
-
-
 }
 
-module.exports = Stop;
+module.exports = Ping;
