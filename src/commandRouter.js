@@ -8,17 +8,16 @@ const Play = require('./commands/play');
 const Roll = require('./commands/roll');
 
 class commandParser {
-
-    constructor(settings) {
+    constructor(settings, players) {
         this.settings = settings;
         this.commands = [
             new Ping(),
-            new Set(),
+            new Set(this.settings),
             new RussianRoulette(),
-            new PlayLocal(),
+            new PlayLocal(players),
             new Stop(),
             new Restart(),
-            new Play(),
+            new Play(players),
             new Roll()];
     }
 
