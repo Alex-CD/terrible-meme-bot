@@ -4,6 +4,8 @@ const client = new Discord.Client();
 const Router = require('./commandRouter');
 const Players = require('./players');
 
+require('dotenv').config()
+
 var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX };
 
 
