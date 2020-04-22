@@ -18,12 +18,6 @@ class PlayLocal {
             return;
         }
 
-        if(command == "reload"){
-            this.audioFiles.clear();
-            this.loadAudioFiles();
-            message.channel.send("Audio files regenerated.");
-        }
-
         if (!bot.isUserConnected(message)) {
             message.channel.send("You need to be in a voice channel to play audio");
             return;
@@ -38,9 +32,8 @@ class PlayLocal {
         if(this.players.hasPlayer(message.guild.id)){
             var player = this.players.get(message.guild.id);
 
-
             if( player.state == "PLAYING" || player.state == "PAUSED"){
-                
+
                 player.interrupt(message);
             }
         }
@@ -78,7 +71,7 @@ class PlayLocal {
 
     printCommands(message){
 
-        var out = "```Use !v [sound] to play a sound.\nAvailable commands:";
+        var out = "```Use !v [sound] to play a sound.\nAvailable commands: ";
 
         var keys = this.audioFiles.keys();
 

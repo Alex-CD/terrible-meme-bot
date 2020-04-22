@@ -8,6 +8,7 @@ const Play = require('./commands/play');
 const Skip = require('./commands/skip');
 const Roll = require('./commands/roll');
 const Pause = require('./commands/pause');
+const Info = require('./commands/info');
 
 class commandParser {
     constructor(settings, players) {
@@ -21,6 +22,7 @@ class commandParser {
             new Stop(players),
             new Skip(players),
             new Pause(players),
+            new Info(players),
             new Restart(),
             new Roll()];
     }

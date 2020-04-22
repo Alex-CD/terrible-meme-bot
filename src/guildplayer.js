@@ -37,7 +37,7 @@ class GuildPlayer {
 
     async interrupt(message) {
         if (this.state == "PLAYING") {
-            this.pause(message);
+            await this.pause(message);
 
             this.state = "INTERRUPTED"
             this.videoQueue.unshift(this.nowPlaying);
@@ -46,7 +46,7 @@ class GuildPlayer {
 
     async uninterrupt(message) {
         if (this.state == "INTERRUPTED") {
-            this.state = "STOPPED";
+            this.state = "STOPPED"
             await this.startPlaying(message);
         }
     }
@@ -104,12 +104,6 @@ class GuildPlayer {
 
     clearPlaylist() {
         this.videoQueue = [];
-    }
-
-
-    async info(message) {
-        var info = await ytdl.getBasicInfo(toPlay);
-        message.channel.send("```" + info.title + "\n" + info.description + "```");
     }
 
     async setVolume(message, volume) {
@@ -171,11 +165,30 @@ class GuildPlayer {
         });
 
 
-        var info = await ytdl.getBasicInfo(toPlay);
-        message.channel.send("Now Playing: **" + info.title + "**");
+       
 
     }
 
+    async printSongInfo(message){
+        var info = await ytdl.getBasicInfo(this.nowPlaying);
+
+        var length = this.makeVideoLengthReadable(info.length_seconds);
+
+        var songInfoString = info.title + "\n" + length;
+        message.channel.send("```Now Playing:\n" + songInfoString + "```");
+    }
+
+    makeVideoLengthReadable(lengthSeconds){
+        var minutes = Math.floor(lengthSeconds / 60);
+        var seconds = lengthSeconds % 60;
+
+        if(seconds < 10){
+            seconds = "0" + seconds;
+        }
+
+        return minutes + ":" + seconds;
+    }
+    
 
 }
 
