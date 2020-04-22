@@ -27,5 +27,6 @@ client.on('message', message => {
 
 process.on("SIGINT", ()=>{
     client.destroy();
+    process.exit();
 })
 

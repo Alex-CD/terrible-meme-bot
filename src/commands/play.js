@@ -12,9 +12,13 @@ class Play {
 
 
     async run(command, message) {
-        console.log(this.players);
         if (!bot.isUserConnected) {
             message.channel.send("You need to be in a channel to request songs.");
+            return;
+        }
+
+        if(command == ""){
+            this.players.resume(message);
             return;
         }
 

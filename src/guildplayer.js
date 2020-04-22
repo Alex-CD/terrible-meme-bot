@@ -28,46 +28,78 @@ class GuildPlayer {
     }
 
     async startPlaying(message) {
-        if (this.state == "STOPPED" && this.hasVideos) {
+        if (this.state != "PLAYING" && this.hasVideos()) {
 
             var connection = await message.member.voice.channel.join();
-
             this.playNext(message, connection);
         }
     }
 
     async interrupt(message) {
-        this.state = "INTERRUPTED"
-        return message.guild.me.voice.connection;
+        if (this.state == "PLAYING") {
+            this.pause(message);
+
+            this.state = "INTERRUPTED"
+            this.videoQueue.unshift(this.nowPlaying);
+        }
+    }
+
+    async uninterrupt(message) {
+        if (this.state == "INTERRUPTED") {
+            this.state = "STOPPED";
+            await this.startPlaying(message);
+        }
     }
 
     async pause(message) {
         if (this.state == "PLAYING") {
-            message.guild.me.voice.dispatcher.pause(true);
+            var connection = await this.getConnection(message);
+            await connection.dispatcher.pause();
             this.state = "PAUSED";
         }
-
-        message.channel.send("Player not playing.");
     }
 
     async resume(message) {
         if (this.state == "PAUSED") {
-            message.guild.me.voice.dispatcher.resume();
+            var connection = await this.getConnection(message);
+            await connection.dispatcher.resume();
+
+            this.state = "PLAYING";
             return;
         }
 
         message.channel.send("Player not paused.");
     }
 
+    async getConnection(message) {
+        var thisConnection = await message.client.voice.connections.filter((connection) => {
+            return connection.channel.id === message.guild.me.voice.channel.id;
+        });
+
+        return thisConnection.first();
+    }
+
 
     async skip(message) {
-        message.guild.me.voice.dispatcher.end();
+        var connection = await this.getConnection(message);
+        await connection.dispatcher.end();
+
+        if(this.state == "PAUSED"){
+            this.startPlaying(message);
+        }
     }
 
     async stop(message) {
-        this.clearPlaylist();
-        message.guid.me.voice.dispatcher.end();
-        this.state = "STOPPED";
+        if (this.state !== "STOPPED") {
+            this.clearPlaylist();
+            this.state = "STOPPED";
+            var connection = await this.getConnection(message);
+
+            if(connection.dispatcher){
+                await connection.dispatcher.end();
+            }
+            
+        }
     }
 
     clearPlaylist() {
@@ -80,9 +112,9 @@ class GuildPlayer {
         message.channel.send("```" + info.title + "\n" + info.description + "```");
     }
 
-    async setVolume(message, volume){
+    async setVolume(message, volume) {
         this.volume = volume;
-        message.guild.me.voice.dispatcher.setVolume(volume);
+        message.client.queue.get(message.guild.id).connection.dispatcher.setVolume(volume);
     }
 
 
@@ -104,7 +136,6 @@ class GuildPlayer {
 
     nextVideo() {
         var next = this.videoQueue.shift();
-        console.log("NEXTVIDEO::" + next + "\n\n");
         return next;
     }
 
@@ -122,12 +153,17 @@ class GuildPlayer {
         var toPlay = this.nextVideo();
         const stream = ytdl(toPlay, { filter: 'audioonly', quality: 'highestaudio' });
         var dispatcher = await connection.play(stream);
+        dispatcher.setVolume(this.volume);
         this.nowPlaying = toPlay;
 
-        this.state == "PLAYING";
+        this.state = "PLAYING";
 
         dispatcher.on('finish', () => {
-            this.playNext(message, connection);
+            if (this.state != "INTERRUPTED") {
+                this.playNext(message, connection);
+            }
+
+            this.state = "STOPPED";
         });
 
         dispatcher.on('error', () => {

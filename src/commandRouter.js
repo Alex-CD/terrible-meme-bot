@@ -5,7 +5,9 @@ const RussianRoulette = require('./commands/russianroulette');
 const PlayLocal = require('./commands/playLocal');
 const Restart = require('./commands/restart');
 const Play = require('./commands/play');
+const Skip = require('./commands/skip');
 const Roll = require('./commands/roll');
+const Pause = require('./commands/pause');
 
 class commandParser {
     constructor(settings, players) {
@@ -15,9 +17,11 @@ class commandParser {
             new Set(this.settings),
             new RussianRoulette(),
             new PlayLocal(players),
-            new Stop(),
-            new Restart(),
             new Play(players),
+            new Stop(players),
+            new Skip(players),
+            new Pause(players),
+            new Restart(),
             new Roll()];
     }
 
