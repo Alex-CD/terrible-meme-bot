@@ -20,7 +20,7 @@ class Stop {
                     return connection.channel.id === message.guild.me.voice.channel.id;
                 });
 
-                await thisConnection.first().dispatcher.stop
+                await thisConnection.first().dispatcher.stop();
             }
         }
 

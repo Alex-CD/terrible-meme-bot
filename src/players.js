@@ -8,10 +8,14 @@ class Players {
     async play(message, url) {
 
         if(!this.hasPlayer(message.guild.id)){
-            this.guildPlayers.set(message.guild.id, new guildPlayer());
+            this.makePlayer(message.guild.id)
         }
 
         this.guildPlayers.get(message.guild.id).queue(message, url);
+    }
+
+    async makePlayer(guildID){
+        this.guildPlayers.set(guildID, new guildPlayer());
     }
 
     async resume(message){
@@ -19,6 +23,10 @@ class Players {
     }
 
     get(guildID){
+        if(!this.hasPlayer(guildID)){
+            this.makePlayer(guildID);
+        }
+
         return this.guildPlayers.get(guildID);
     }
 
