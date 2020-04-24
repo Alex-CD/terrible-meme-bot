@@ -30,6 +30,15 @@ class PlayLocal {
 
 
 
+
+        var requestedFiles = this.audioFiles.get(command);
+
+        if (!requestedFiles) {
+            message.channel.send("Unknown audio clip");
+            return;
+        }
+
+
         if (this.players.hasPlayer(message.guild.id)) {
             var player = this.players.get(message.guild.id);
 
@@ -37,13 +46,6 @@ class PlayLocal {
 
                 player.interrupt(message);
             }
-        }
-
-        var requestedFiles = this.audioFiles.get(command);
-
-        if (!requestedFiles) {
-            message.channel.send("Unknown audio clip");
-            return;
         }
 
         message.delete();
