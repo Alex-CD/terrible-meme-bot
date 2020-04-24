@@ -34,7 +34,7 @@ jobs:
               echo "No deploy folder found. Creating new folders and essential files." &&
               mkdir ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }}/audio &&
               cd ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} &&
-              echo -e "PROCESS_TITLE=terrible_meme_bot\nLOCAL_AUDIO_DIR=../audio\nDISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}\nDEFAULT_COMMAND_PREFIX=!" > .env &&
+              echo -e "PROCESS_TITLE=${{ secrets.PROCESS_NAME }}\nLOCAL_AUDIO_DIR=../audio\nDISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}\nDEFAULT_COMMAND_PREFIX=!" > .env &&
               git clone https://github.com/Alex-CD/terrible-meme-bot.git node
             fi &
             cd terrible-meme-bot-prod/node &&
