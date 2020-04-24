@@ -55,14 +55,16 @@ class PlayLocal {
 
 
         dispatcher.on('finish', () => {
-            if (player) { player.uninterrupt(message) };
+            if (player) { 
+                player.uninterrupt(message)
+            };
         });
 
 
     }
 
     loadAudioFiles() {
-        console.log(this.audioDir);
+        console.log("Loading audio files from " + this.audioDir);
         var directories = fs.readdirSync(this.audioDir);
 
         for (var i = 0; i < directories.length; i++) {

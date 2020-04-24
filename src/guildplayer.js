@@ -115,7 +115,6 @@ class GuildPlayer {
         var connection = await this.getConnection(message);
         if(connection.dispatcher != undefined){
             await connection.dispatcher.setVolume(volume);
-            console.log("volume set.");
         }
 
 
@@ -158,8 +157,6 @@ class GuildPlayer {
         const stream = ytdl(toPlay, { filter: 'audioonly', quality: 'highestaudio' });
         var dispatcher = await connection.play(stream);
         dispatcher.setVolume(this.volume);
-
-        console.log("volume:" + this.volume);
         this.nowPlaying = toPlay;
 
         this.state = "PLAYING";
