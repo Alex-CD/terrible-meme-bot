@@ -6,13 +6,14 @@ class Volume  {
 
     run(command, message){
 
-        var volume = parseFloat(message);
+        var volume = parseFloat(command);
 
         if(volume == NaN){
             message.channel.send("Invalid volume");
         }
-
-        this.players.get(message.guild.id).setVolume(volume);
+        
+        var player = this.players.get(message.guild.id);
+        player.setVolume(message, volume);
     }
 }
 

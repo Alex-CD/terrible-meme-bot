@@ -30,6 +30,15 @@ class PlayLocal {
 
 
 
+
+        var requestedFiles = this.audioFiles.get(command);
+
+        if (!requestedFiles) {
+            message.channel.send("Unknown audio clip");
+            return;
+        }
+
+
         if (this.players.hasPlayer(message.guild.id)) {
             var player = this.players.get(message.guild.id);
 
@@ -37,13 +46,6 @@ class PlayLocal {
 
                 player.interrupt(message);
             }
-        }
-
-        var requestedFiles = this.audioFiles.get(command);
-
-        if (!requestedFiles) {
-            message.channel.send("Unknown audio clip");
-            return;
         }
 
         message.delete();
@@ -55,14 +57,16 @@ class PlayLocal {
 
 
         dispatcher.on('finish', () => {
-            if (player) { player.uninterrupt(message) };
+            if (player) { 
+                player.uninterrupt(message)
+            };
         });
 
 
     }
 
     loadAudioFiles() {
-        console.log(this.audioDir);
+        console.log("Loading audio files from " + this.audioDir);
         var directories = fs.readdirSync(this.audioDir);
 
         for (var i = 0; i < directories.length; i++) {

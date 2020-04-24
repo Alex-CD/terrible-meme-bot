@@ -107,8 +107,17 @@ class GuildPlayer {
     }
 
     async setVolume(message, volume) {
+
+
+        if(volume < 0.1 || volume > 100) return;
+
         this.volume = volume;
-        message.client.queue.get(message.guild.id).connection.dispatcher.setVolume(volume);
+        var connection = await this.getConnection(message);
+        if(connection.dispatcher != undefined){
+            await connection.dispatcher.setVolume(volume);
+        }
+
+
     }
 
 
