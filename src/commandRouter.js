@@ -10,6 +10,7 @@ const Roll = require('./commands/roll');
 const Pause = require('./commands/pause');
 const Info = require('./commands/info');
 const Volume = require('./commands/volume');
+const Help = require('./commands/help');
 
 class commandParser {
     constructor(settings, players) {
@@ -26,7 +27,8 @@ class commandParser {
             new Info(players),
             new Restart(),
             new Volume(players),
-            new Roll()];
+            new Roll(),
+            new Help()];
     }
 
     route(message) {
