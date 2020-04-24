@@ -7,13 +7,14 @@ class PlayLocal {
     constructor(players) {
         this.players = players;
         this.aliases = ["v"];
+        this.audioDir = process.env.LOCAL_AUDIO_DIR + "/"
         this.audioFiles = new Map();
         this.loadAudioFiles();
     }
 
     async run(command, message) {
 
-        if(command == "help"){
+        if (command == "help") {
             this.printCommands(message);
             return;
         }
@@ -23,16 +24,16 @@ class PlayLocal {
             return;
         }
 
-        if(!bot.isBotInUsersChannel && !bot.isBotPlaying){
+        if (!bot.isBotInUsersChannel && !bot.isBotPlaying) {
             message.channel.send("Bot is already playing for someone else :(");
         }
 
-        
 
-        if(this.players.hasPlayer(message.guild.id)){
+
+        if (this.players.hasPlayer(message.guild.id)) {
             var player = this.players.get(message.guild.id);
 
-            if( player.state == "PLAYING" || player.state == "PAUSED"){
+            if (player.state == "PLAYING" || player.state == "PAUSED") {
 
                 player.interrupt(message);
             }
@@ -40,7 +41,7 @@ class PlayLocal {
 
         var requestedFiles = this.audioFiles.get(command);
 
-        if(!requestedFiles){
+        if (!requestedFiles) {
             message.channel.send("Unknown audio clip");
             return;
         }
@@ -48,28 +49,29 @@ class PlayLocal {
         message.delete();
 
         var connection = await message.member.voice.channel.join();
-        var toPlay = "./audio/" + command + "/" + requestedFiles[random.int(0, requestedFiles.length - 1)];
+        var toPlay = this.audioDir + command + "/" + requestedFiles[random.int(0, requestedFiles.length - 1)];
         var dispatcher = await connection.play(toPlay);
 
-       
-        
+
+
         dispatcher.on('finish', () => {
-            if(player){player.uninterrupt(message)};
+            if (player) { player.uninterrupt(message) };
         });
 
 
     }
 
     loadAudioFiles() {
-       var directories = fs.readdirSync("./audio/");
+        console.log(this.audioDir);
+        var directories = fs.readdirSync(this.audioDir);
 
-        for(var i = 0; i < directories.length; i++){
-            var files = fs.readdirSync("./audio/" + directories[i]);
-            this.audioFiles.set(directories[i], files);      
+        for (var i = 0; i < directories.length; i++) {
+            var files = fs.readdirSync(this.audioDir + directories[i]);
+            this.audioFiles.set(directories[i], files);
         }
     }
 
-    printCommands(message){
+    printCommands(message) {
 
         var out = "```Use !v [sound] to play a sound.\nAvailable commands: ";
 
@@ -77,11 +79,11 @@ class PlayLocal {
 
         var key = keys.next();
 
-        while(!key.done){
+        while (!key.done) {
             out += key.value;
             key = keys.next();
 
-            if(!key.done) out += ", ";
+            if (!key.done) out += ", ";
         }
 
         out += "```"
