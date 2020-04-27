@@ -38,6 +38,7 @@ jobs:
               git clone https://github.com/Alex-CD/terrible-meme-bot.git node
             fi &&
             cd ~/${{ secrets.DEPLOY_DIRECTORY_RELATIVE }}/node &&
+            git pull &&
             npm install &&
             echo "Restarting bot" &&
             npm start &
