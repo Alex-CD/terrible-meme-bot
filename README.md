@@ -52,21 +52,6 @@ npm start
 ````
 
 
-### Automated deployment
-
-You can make use of the GitHub action [deploy.yml](https://github.com/Alex-CD/terrible-meme-bot/blob/master/.github/workflows/deploy.yml) to automatically install, update, and run the bot whenever the master branch is updated.
-
-You'll need to set up the following repository [secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets) on GitHub that deploy.yml will use to deploy the server:
-
-- DEPLOY_DIRECTORY_RELATIVE : The folder, relative to the user's HOME directory, in which to install the server.
-- DISCORD_TOKEN : Your [bot token](https://discordapp.com/developers/docs/intro) on Discord
-- PROCESS_NAME : The name to give the process
-- SERVER_IP : The server IP to SSH into.
-- SERVER_USERNAME : The user on the above server to SSH into.
-- SERVER_PASSWORD : The password for the above user.
-
-
-
 ## Contributions
 
 This project is open to contributions!
