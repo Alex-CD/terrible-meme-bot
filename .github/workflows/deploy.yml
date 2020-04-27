@@ -36,8 +36,8 @@ jobs:
               cd ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} &&
               echo -e "PROCESS_TITLE=${{ secrets.PROCESS_NAME }}\nLOCAL_AUDIO_DIR=../audio\nDISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}\nDEFAULT_COMMAND_PREFIX=!" > .env &&
               git clone https://github.com/Alex-CD/terrible-meme-bot.git node
-            fi &
-            cd terrible-meme-bot-prod/node &&
+            fi &&
+            cd ~/${{ secrets.DEPLOY_DIRECTORY_RELATIVE }}/node &&
             npm install &&
             echo "Restarting bot" &&
             npm start &
