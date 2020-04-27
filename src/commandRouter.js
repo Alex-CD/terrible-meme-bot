@@ -32,8 +32,8 @@ class commandParser {
     }
 
     route(message) {
-        // Ignore messages that don't start with a prefix, or that come from another bot
-        if (!message.content.startsWith(this.settings.prefix) || message.author.bot) return;
+        // Ignore messages that don't start with a prefix, are a PM, or come from another bot
+        if (!message.content.startsWith(this.settings.prefix) || message.author.bot || message.channel.type != "text") return;
         
         var command = message.content.split(' ')[0];
         var trimmedCommand = this.trimCommand(this.removeSpaces(message.content));
