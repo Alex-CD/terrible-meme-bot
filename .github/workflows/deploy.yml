@@ -27,7 +27,6 @@ jobs:
               echo "bot is already running. Attempting to kill." &&
               kill -s SIGINT $(pgrep ${{ secrets.PROCESS_NAME }} -f)
             fi &&
-            
             # Create new deploy folder if none is found
             if ! [ -d ~/${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} ];
             then
@@ -35,10 +34,12 @@ jobs:
               mkdir ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }}/audio &&
               cd ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} &&
               echo -e "PROCESS_TITLE=${{ secrets.PROCESS_NAME }}\nLOCAL_AUDIO_DIR=../audio\nDISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}\nDEFAULT_COMMAND_PREFIX=!" > .env &&
-              git clone https://github.com/Alex-CD/terrible-meme-bot.git node
+              git clone https://github.com/Alex-CD/terrible-meme-bot.git node &&
+              echo "Repo cloned"
             fi &&
             cd ~/${{ secrets.DEPLOY_DIRECTORY_RELATIVE }}/node &&
             git pull &&
+            echo "Running npm install" &&
             npm install &&
             echo "Restarting bot" &&
             npm start &
