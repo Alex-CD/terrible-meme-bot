@@ -29,7 +29,7 @@ jobs:
             fi &&
             
             # Create new deploy folder if none is found
-            if ! [ -d ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} ];
+            if ! [ -d ~/${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} ];
             then
               echo "No deploy folder found. Creating new folders and essential files." &&
               mkdir ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }} ${{ secrets.DEPLOY_DIRECTORY_RELATIVE }}/audio &&
