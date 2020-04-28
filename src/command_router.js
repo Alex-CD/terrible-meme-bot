@@ -1,28 +1,20 @@
 
 
 class CommandRouter {
-    constructor(settings, players) {
+    constructor(settings, players, commands) {
         this.settings = settings;
-
-        //Import all moduls from commands/
-        this.commands = require('require-all')({
-            dirname: __dirname + "/commands",
-            resolve: function (command) {
-                return new command(settings, players);
-            }
-        });
+        this.commands = commands;
     }
 
-    route(message) {
+    route(message, messageText) {
         // Ignore messages that don't start with a prefix, are a PM, or come from another bot
-        if (!message.content.startsWith(this.settings.prefix) || message.author.bot || message.channel.type != "text") return;
+        if (!messageText.startsWith(this.settings.prefix) || message.author.bot || message.channel.type != "text") return;
 
-        var command = message.content.split(' ')[0];
-        var trimmedCommand = this.trimCommand(this.removeSpaces(message.content));
+        var command = messageText.split(' ')[0];
+        var trimmedCommand = this.trimCommand(this.removeSpaces(messageText));
 
         // Match requested command aliases
         for (const module in this.commands) {
-
             var aliases = this.commands[module].aliases;
 
             for (var a = 0; a < aliases.length; a++) {
@@ -58,4 +50,4 @@ class CommandRouter {
 
 
 
-module.exports = Commandrouter;
+module.exports = CommandRouter;

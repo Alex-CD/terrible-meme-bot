@@ -9,9 +9,21 @@ require('dotenv').config({ path: __dirname + '/../../.env' });
 var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX };
 
 var players = new Players();
-var router = new Router(settings, players);
+
 
 process.title = process.env.PROCESS_TITLE;
+
+
+
+//Import all modules from commands/
+var commands = require('require-all')({
+    dirname: __dirname + "/commands",
+    resolve: function (command) {
+        return new command(settings, players);
+    }
+});
+
+var router = new Router(settings, players, commands);
 
 client.once('ready', () => {
     console.log('Connected');
@@ -20,7 +32,7 @@ client.once('ready', () => {
 client.login(process.env.DISCORD_TOKEN);
 
 client.on('message', message => {
-    router.route(message);
+    router.route(message, message.content);
 });
 
 
