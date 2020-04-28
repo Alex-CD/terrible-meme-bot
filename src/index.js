@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const Router = require('./commandRouter');
+const Router = require('./command_router');
 const Players = require('./players');
 
 require('dotenv').config({ path: __dirname + '/../../.env' });
