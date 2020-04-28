@@ -173,11 +173,15 @@ class GuildPlayer {
             return;
         };
 
+        
+
         var toPlay = this.nextVideo();
         const stream = ytdl(toPlay, { filter: 'audioonly', quality: 'highestaudio' });
         var dispatcher = await connection.play(stream);
         dispatcher.setVolume(this.volume);
+        
         this.nowPlaying = toPlay;
+        this.printSongInfo(message);
 
         this.state = "PLAYING";
 
