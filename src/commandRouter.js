@@ -22,10 +22,7 @@ class commandParser {
         var command = message.content.split(' ')[0];
         var trimmedCommand = this.trimCommand(this.removeSpaces(message.content));
 
-
-        
-
-        // Loop through commands, loop through command aliases to try to match requested
+        // Match requested command aliases
         for (const module in this.commands) {
 
             var aliases = this.commands[module].aliases;
