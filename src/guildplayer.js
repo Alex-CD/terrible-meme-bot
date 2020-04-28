@@ -11,27 +11,44 @@ class GuildPlayer {
     }
 
 
-    async queue(message, url) {
-
+    async play(message, url) {
+        if(this.state == "INTERRUPTED"){
+            this.stop(message);
+            this.state = "STOPPED";
+        }
+        
         if (ytpl.validateURL(url)) {
-            var numberAdded = await this.addPlaylist(url);
+            var numberAdded = await this.queuePlaylist(url);
+
+            if(numberAdded == 0){
+                message.channel.send("Error fetching playlist. Sorry! This is a bug with youtube." +
+                "Rerequesting the playlist usually works.");
+                return;
+            }
+
             message.channel.send("Enqueued " + numberAdded + " songs");
+
         } else if (ytdl.validateURL(url)) {
-            this.addVideo(url);
+
+            this.queueVideo(url);
             message.channel.send("Song queued.");
+
         } else {
             message.channel.send("Invalid video/playlist url");
             return;
         }
 
-        this.startPlaying(message);
-    }
-
-    async startPlaying(message) {
-        if (this.state != "PLAYING" && this.hasVideos()) {
-
+        if(this.state == "PAUSED"){
+            this.clearQueue();
             var connection = await message.member.voice.channel.join();
             this.playNext(message, connection);
+            return;
+        }
+
+        if (this.state == "STOPPED") {
+            var connection = await message.member.voice.channel.join();
+            this.playNext(message, connection);
+            return;
         }
     }
 
@@ -44,10 +61,10 @@ class GuildPlayer {
         }
     }
 
-    async uninterrupt(message) {
+    async uninterrupt(message, connection) {
         if (this.state == "INTERRUPTED") {
             this.state = "STOPPED"
-            await this.startPlaying(message);
+            await this.playNext(message, connection);
         }
     }
 
@@ -90,24 +107,28 @@ class GuildPlayer {
     }
 
     async stop(message) {
-        if (this.state !== "STOPPED") {
-            this.clearPlaylist();
-            this.state = "STOPPED";
-            var connection = await this.getConnection(message);
 
-            if(connection.dispatcher){
-                await connection.dispatcher.end();
-            }
-            
+        if(this.state == "INTERRUPTED"){
+            var connection = await this.getConnection(message);
+            await connection.dispatcher.end();
+            return;
+        }
+
+        this.clearQueue();
+
+        this.state = "STOPPED";
+        var connection = await this.getConnection(message);
+
+        if(connection.dispatcher){
+            await connection.dispatcher.end();
         }
     }
 
-    clearPlaylist() {
+    clearQueue() {
         this.videoQueue = [];
     }
 
     async setVolume(message, volume) {
-
 
         if(volume < 0.1 || volume > 100) return;
 
@@ -116,24 +137,22 @@ class GuildPlayer {
         if(connection.dispatcher != undefined){
             await connection.dispatcher.setVolume(volume);
         }
-
-
     }
 
 
-    async addPlaylist(url) {
+    async queuePlaylist(url) {
 
         var list = await ytlist(url, 'url')
         var videos = list.data.playlist;
 
         for (var i = 0; i < videos.length; i++) {
-            this.addVideo(videos[i]);
+            this.queueVideo(videos[i]);
         }
 
         return videos.length;
     }
 
-    async addVideo(url) {
+    async queueVideo(url) {
         this.videoQueue.push(url);
     }
 
@@ -148,34 +167,31 @@ class GuildPlayer {
 
 
     async playNext(message, connection) {
+
         if (!this.hasVideos()) {
             this.state == "STOPPED";
             return;
         };
 
+        
+
         var toPlay = this.nextVideo();
         const stream = ytdl(toPlay, { filter: 'audioonly', quality: 'highestaudio' });
         var dispatcher = await connection.play(stream);
         dispatcher.setVolume(this.volume);
+        
         this.nowPlaying = toPlay;
+        this.printSongInfo(message);
 
         this.state = "PLAYING";
 
         dispatcher.on('finish', () => {
-            if (this.state != "INTERRUPTED") {
-                this.playNext(message, connection);
-            }
-
-            this.state = "STOPPED";
+            this.playNext(message, connection);
         });
 
         dispatcher.on('error', () => {
             this.state = "STOPPED"
         });
-
-
-       
-
     }
 
     async printSongInfo(message){
@@ -197,8 +213,6 @@ class GuildPlayer {
 
         return minutes + ":" + seconds;
     }
-    
-
 }
 
 module.exports = GuildPlayer;

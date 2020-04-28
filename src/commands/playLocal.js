@@ -4,7 +4,7 @@ const bot = require('../botUtils');
 
 
 class PlayLocal {
-    constructor(players) {
+    constructor(settings, players) {
         this.players = players;
         this.aliases = ["v"];
         this.audioDir = process.env.LOCAL_AUDIO_DIR + "/"
@@ -24,13 +24,6 @@ class PlayLocal {
             return;
         }
 
-        if (!bot.isBotInUsersChannel && !bot.isBotPlaying) {
-            message.channel.send("Bot is already playing for someone else :(");
-        }
-
-
-
-
         var requestedFiles = this.audioFiles.get(command);
 
         if (!requestedFiles) {
@@ -43,7 +36,6 @@ class PlayLocal {
             var player = this.players.get(message.guild.id);
 
             if (player.state == "PLAYING" || player.state == "PAUSED") {
-
                 player.interrupt(message);
             }
         }
@@ -56,10 +48,8 @@ class PlayLocal {
 
 
 
-        dispatcher.on('finish', () => {
-            if (player) { 
-                player.uninterrupt(message)
-            };
+        dispatcher.on('finish', async () => {
+            this.players.get(message.guild.id).uninterrupt(message, connection);
         });
 
 

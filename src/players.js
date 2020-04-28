@@ -5,21 +5,8 @@ class Players {
         this.guildPlayers = new Map();
     }
 
-    async play(message, url) {
-
-        if(!this.hasPlayer(message.guild.id)){
-            this.makePlayer(message.guild.id)
-        }
-
-        this.guildPlayers.get(message.guild.id).queue(message, url);
-    }
-
     async makePlayer(guildID){
         this.guildPlayers.set(guildID, new guildPlayer());
-    }
-
-    async resume(message){
-        this.guildPlayers.get(message.guild.id).resume(message);
     }
 
     get(guildID){

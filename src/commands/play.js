@@ -5,8 +5,8 @@ var bot = require('../botUtils');
 
 
 class Play {
-    constructor(players){
-        this.aliases = ["play"];
+    constructor(settings, players){
+        this.aliases = ["play", "hyt"];
         this.players = players;
     }
 
@@ -18,11 +18,16 @@ class Play {
         }
 
         if(command == ""){
-            this.players.resume(message);
+            await this.players.get.resume(message);
             return;
         }
 
-        this.players.play(message, command);
+        // if message is 'hidden youtube'
+        if(message.content.slice(1).split(' ')[0] === "hyt"){
+            await message.delete();
+        }
+
+        this.players.get(message.guild.id).play(message, command);
     }
 }
 

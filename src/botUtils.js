@@ -8,5 +8,5 @@ exports.isBotInUsersChannel = function (message) {
 }
 
 exports.isBotConnectedToGuild = function(message){
-    return message.guild.me.voice.channel;
+    return message.guild.me.voice.channel != null;
 }

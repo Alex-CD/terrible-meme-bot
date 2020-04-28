@@ -1,6 +1,6 @@
 class Info {
-    constructor(player){
-        this.player = player;
+    constructor(settings, players){
+        this.player = players;
         this.aliases = ["info", "song"];
     }
 
