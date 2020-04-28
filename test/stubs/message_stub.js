@@ -11,10 +11,11 @@ class MessageStub {
         // Replacing default values with passed settings, if they exist
         var params = Object.assign(defaultVals, settings);
 
-        this.contents = params.contents;
-        this.channel = { type : params.type };
-        this.author = { id: params.author, bot : params.bot};
+        this.sentMessages = [];
 
+        this.contents = params.contents;
+        this.channel = { type : params.type, send : function(string){ this.sentMessages.push(string); } };
+        this.author = { id: params.author, bot : params.bot};
     }
 }
 

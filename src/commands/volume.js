@@ -12,8 +12,7 @@ class Volume  {
             message.channel.send("Invalid volume");
         }
         
-        var player = this.players.get(message.guild.id);
-        player.setVolume(message, volume);
+        var player = this.players.get(message.guild.id).setVolume(message, volume);
     }
 }
 

@@ -18,7 +18,7 @@ class Play {
         }
 
         if(command == ""){
-            this.players.resume(message);
+            await this.players.get.resume(message);
             return;
         }
 
@@ -27,7 +27,7 @@ class Play {
             await message.delete();
         }
 
-        this.players.play(message, command);
+        this.players.get(message.guild.id).play(message, command);
     }
 }
 
