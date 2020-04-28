@@ -4,7 +4,8 @@
   "description": "A terrible bot for discord",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test" : "mocha"
   },
   "repository": {
     "type": "git",
@@ -30,5 +31,9 @@
     "youtube-playlist": "^1.0.2",
     "ytdl-core": "^2.1.0",
     "ytpl": "^0.1.20"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.2"
   }
 }

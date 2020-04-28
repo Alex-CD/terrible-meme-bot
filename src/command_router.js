@@ -1,6 +1,6 @@
 
 
-class commandParser {
+class CommandRouter {
     constructor(settings, players) {
         this.settings = settings;
 
@@ -11,8 +11,6 @@ class commandParser {
                 return new command(settings, players);
             }
         });
-
-
     }
 
     route(message) {
@@ -60,4 +58,4 @@ class commandParser {
 
 
 
-module.exports = commandParser;
+module.exports = Commandrouter;
