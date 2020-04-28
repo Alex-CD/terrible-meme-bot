@@ -1,6 +1,6 @@
 {
   "name": "terrible-meme-bot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A terrible bot for discord",
   "main": "src/index.js",
   "scripts": {
