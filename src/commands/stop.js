@@ -1,7 +1,7 @@
 const bot = require('../botUtils');
 
 class Stop {
-    constructor(players) {
+    constructor(settings, players) {
         this.players = players;
         this.aliases = ["stop"];
     }

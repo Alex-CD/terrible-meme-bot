@@ -1,6 +1,6 @@
 {
   "name": "terrible-meme-bot",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A terrible bot for discord",
   "main": "src/index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "dotenv": "^8.2.0",
     "ffmpeg-static": "^4.1.1",
     "random": "^2.2.0",
+    "require-all": "^3.0.0",
     "youtube-playlist": "^1.0.2",
     "ytdl-core": "^2.1.0",
     "ytpl": "^0.1.20"

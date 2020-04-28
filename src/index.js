@@ -11,10 +11,7 @@ var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX };
 var players = new Players();
 var router = new Router(settings, players);
 
-
-
 process.title = process.env.PROCESS_TITLE;
-
 
 client.once('ready', () => {
     console.log('Connected');

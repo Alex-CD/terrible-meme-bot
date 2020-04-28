@@ -1,53 +1,43 @@
-const Ping = require('./commands/ping');
-const Set = require('./commands/set');
-const Stop = require('./commands/stop');
-const RussianRoulette = require('./commands/russianroulette');
-const PlayLocal = require('./commands/playLocal');
-const Restart = require('./commands/restart');
-const Play = require('./commands/play');
-const Skip = require('./commands/skip');
-const Roll = require('./commands/roll');
-const Pause = require('./commands/pause');
-const Info = require('./commands/info');
-const Volume = require('./commands/volume');
-const Help = require('./commands/help');
+
 
 class commandParser {
     constructor(settings, players) {
         this.settings = settings;
-        this.commands = [
-            new Ping(),
-            new Set(this.settings),
-            new RussianRoulette(),
-            new PlayLocal(players),
-            new Play(players),
-            new Stop(players),
-            new Skip(players),
-            new Pause(players),
-            new Info(players),
-            new Restart(),
-            new Volume(players),
-            new Roll(),
-            new Help()];
+
+        //Import all moduls from commands/
+        this.commands = require('require-all')({
+            dirname: __dirname + "/commands",
+            resolve: function (command) {
+                return new command(settings, players);
+            }
+        });
+
+
     }
 
     route(message) {
         // Ignore messages that don't start with a prefix, are a PM, or come from another bot
         if (!message.content.startsWith(this.settings.prefix) || message.author.bot || message.channel.type != "text") return;
-        
+
         var command = message.content.split(' ')[0];
         var trimmedCommand = this.trimCommand(this.removeSpaces(message.content));
 
 
+        
+
         // Loop through commands, loop through command aliases to try to match requested
-        for (var c = 0; c < this.commands.length; c++) {
-            for (var a = 0; a < this.commands[c].aliases.length; a++) {
-                if (command == this.settings.prefix + this.commands[c].aliases[a]) {
-                    this.commands[c].run(trimmedCommand, message);
+        for (const module in this.commands) {
+
+            var aliases = this.commands[module].aliases;
+
+            for (var a = 0; a < aliases.length; a++) {
+                if (command == this.settings.prefix + aliases[a]) {
+                    this.commands[module].run(trimmedCommand, message);
                 }
             }
         }
     }
+
 
     // Removes leading, trailing, and duplicate spaces
     removeSpaces(string) {

@@ -5,7 +5,7 @@ var bot = require('../botUtils');
 
 
 class Play {
-    constructor(players){
+    constructor(settings, players){
         this.aliases = ["play", "hyt"];
         this.players = players;
     }

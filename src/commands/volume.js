@@ -1,5 +1,5 @@
 class Volume  {
-    constructor(players){
+    constructor(settings, players){
         this.players = players;
         this.aliases = ["volume"];
     }

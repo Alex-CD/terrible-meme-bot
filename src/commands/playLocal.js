@@ -4,7 +4,7 @@ const bot = require('../botUtils');
 
 
 class PlayLocal {
-    constructor(players) {
+    constructor(settings, players) {
         this.players = players;
         this.aliases = ["v"];
         this.audioDir = process.env.LOCAL_AUDIO_DIR + "/"
