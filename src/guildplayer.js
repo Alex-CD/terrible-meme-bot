@@ -144,7 +144,6 @@ class GuildPlayer {
         this.nowPlaying.url = toPlay.url;
         this.nowPlaying.source = toPlay.source;
 
-        console.log(this.nowPlaying.url + this.nowPlaying.source + this.state);
         this.state = "PLAYING";
 
         switch (toPlay.source) {
