@@ -32,27 +32,18 @@ class PlayLocal {
         }
 
 
-        if (this.players.hasPlayer(message.guild.id)) {
-            var player = this.players.get(message.guild.id);
-
-            if (player.state == "PLAYING" || player.state == "PAUSED") {
-                player.interrupt(message);
-            }
-        }
+        var player = this.players.get(message.guild.id);
+        var toPlay = this.audioDir + command + "/" + requestedFiles[random.int(0, requestedFiles.length - 1)];
 
         message.delete();
 
-        var connection = await message.member.voice.channel.join();
-        var toPlay = this.audioDir + command + "/" + requestedFiles[random.int(0, requestedFiles.length - 1)];
-        var dispatcher = await connection.play(toPlay);
+        if (player.state == "PLAYING") {
+            await player.interrupt(message, toPlay, "LOCAL" );
+        } else { 
+            await player.play(message, toPlay, "LOCAL");
+        }
 
-
-
-        dispatcher.on('finish', async () => {
-            this.players.get(message.guild.id).uninterrupt(message, connection);
-        });
-
-
+       
     }
 
     loadAudioFiles() {

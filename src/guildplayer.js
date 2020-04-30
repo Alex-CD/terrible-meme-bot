@@ -1,45 +1,47 @@
-const ytpl = require('ytpl');
+
+var audio_queue = require('./audio_queue');
+
 const ytdl = require('ytdl-core');
-const ytlist = require('youtube-playlist');
 
 class GuildPlayer {
     constructor() {
-        this.videoQueue = [];
+        this.audioQueue = new audio_queue();
         this.state = "STOPPED";
         this.volume = 1.0;
-        this.nowPlaying = "";
+        this.nowPlaying = { url: "", source: "" };
     }
 
 
-    async play(message, url) {
-        if(this.state == "INTERRUPTED"){
-            this.stop(message);
-            this.state = "STOPPED";
-        }
-        
-        if (ytpl.validateURL(url)) {
-            var numberAdded = await this.queuePlaylist(url);
+    async play(message, url, source) {
 
-            if(numberAdded == 0){
-                message.channel.send("Error fetching playlist. Sorry! This is a bug with youtube." +
-                "Rerequesting the playlist usually works.");
-                return;
+        if (message == "") {
+            this.resume();
+        }
+
+        var videosQueued = await this.audioQueue.add(url, source);
+
+
+        if (source == "YOUTUBE") {
+            switch (true) {
+                case videosQueued == 0:
+                    message.channel.send("Error fetching playlist. Sorry! This is a bug with youtube." +
+                        "Rerequesting the playlist usually works.");
+                    return;
+                case videosQueued == 1:
+                    message.channel.send("Song queued.");
+                    break;
+                case videosQueued > 1:
+                    message.channel.send("Enqueued " + videosQueued + " songs");
+                    break;
+                default:
+                    message.channel.send("Invalid video/playlist url");
+                    return;
             }
-
-            message.channel.send("Enqueued " + numberAdded + " songs");
-
-        } else if (ytdl.validateURL(url)) {
-
-            this.queueVideo(url);
-            message.channel.send("Song queued.");
-
-        } else {
-            message.channel.send("Invalid video/playlist url");
-            return;
         }
 
-        if(this.state == "PAUSED"){
-            this.clearQueue();
+
+        if (this.state == "PAUSED") {
+            this.audioQueue.clear();
             var connection = await message.member.voice.channel.join();
             this.playNext(message, connection);
             return;
@@ -52,19 +54,14 @@ class GuildPlayer {
         }
     }
 
-    async interrupt(message) {
+    async interrupt(message, url, source) {
         if (this.state == "PLAYING") {
-            await this.pause(message);
+            if (this.nowPlaying.source != "LOCAL") {
+                this.audioQueue.jumpQueue(this.nowPlaying.url, this.nowPlaying.source);
+            }
 
-            this.state = "INTERRUPTED"
-            this.videoQueue.unshift(this.nowPlaying);
-        }
-    }
-
-    async uninterrupt(message, connection) {
-        if (this.state == "INTERRUPTED") {
-            this.state = "STOPPED"
-            await this.playNext(message, connection);
+            this.audioQueue.jumpQueue(url, source);
+            await this.skip(message);
         }
     }
 
@@ -101,101 +98,98 @@ class GuildPlayer {
         var connection = await this.getConnection(message);
         await connection.dispatcher.end();
 
-        if(this.state == "PAUSED"){
+        if (this.state == "PAUSED") {
             this.startPlaying(message);
         }
     }
 
     async stop(message) {
 
-        if(this.state == "INTERRUPTED"){
+        if (this.state == "INTERRUPTED") {
             var connection = await this.getConnection(message);
             await connection.dispatcher.end();
             return;
         }
 
-        this.clearQueue();
-
+        this.audioQueue.clear();
         this.state = "STOPPED";
-        var connection = await this.getConnection(message);
 
-        if(connection.dispatcher){
+        var connection = await this.getConnection(message);
+        if (connection.dispatcher) {
             await connection.dispatcher.end();
         }
     }
 
-    clearQueue() {
-        this.videoQueue = [];
-    }
-
     async setVolume(message, volume) {
 
-        if(volume < 0.1 || volume > 100) return;
+        if (volume < 0.1 || volume > 100) return;
 
         this.volume = volume;
         var connection = await this.getConnection(message);
-        if(connection.dispatcher != undefined){
+        if (connection.dispatcher != undefined) {
             await connection.dispatcher.setVolume(volume);
         }
     }
 
-
-    async queuePlaylist(url) {
-
-        var list = await ytlist(url, 'url')
-        var videos = list.data.playlist;
-
-        for (var i = 0; i < videos.length; i++) {
-            this.queueVideo(videos[i]);
-        }
-
-        return videos.length;
-    }
-
-    async queueVideo(url) {
-        this.videoQueue.push(url);
-    }
-
-    nextVideo() {
-        var next = this.videoQueue.shift();
-        return next;
-    }
-
-    hasVideos() {
-        return this.videoQueue.length > 0;
-    }
-
-
     async playNext(message, connection) {
-
-        if (!this.hasVideos()) {
+        
+        if (this.audioQueue.isEmpty()) {
             this.state == "STOPPED";
             return;
         };
 
-        
+    
+        var toPlay = this.audioQueue.get();
 
-        var toPlay = this.nextVideo();
-        const stream = ytdl(toPlay, { filter: 'audioonly', quality: 'highestaudio' });
-        var dispatcher = await connection.play(stream);
-        dispatcher.setVolume(this.volume);
-        
-        this.nowPlaying = toPlay;
-        this.printSongInfo(message);
+        this.nowPlaying.url = toPlay.url;
+        this.nowPlaying.source = toPlay.source;
 
         this.state = "PLAYING";
+
+        switch (toPlay.source) {
+            case "YOUTUBE":
+                await this.playYoutubeVideo(message, toPlay.url, connection);
+                break;
+            case "LOCAL":
+                await this.playLocal(message, toPlay.url, connection);
+                break;
+            default:
+                return;
+        }
+    }
+
+    async playYoutubeVideo(message, url, connection) {
+        const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' });
+        var dispatcher = await connection.play(stream);
+        dispatcher.setVolume(this.volume);
+
+        this.nowPlaying.source = "YOUTUBE";
+        this.printSongInfo(message);
 
         dispatcher.on('finish', () => {
             this.playNext(message, connection);
         });
 
         dispatcher.on('error', () => {
-            this.state = "STOPPED"
+            this.playNext(message, connection);
         });
     }
 
-    async printSongInfo(message){
-        var info = await ytdl.getBasicInfo(this.nowPlaying);
+    async playLocal(message, url, connection) {
+        var dispatcher = await connection.play(url);
+        dispatcher.on('finish', async () => {
+            this.playNext(message, connection)
+        });
+
+        dispatcher.on('error', async () => {
+            this.playNext(message, connection)
+        });
+    }
+
+
+
+    async printSongInfo(message) {
+        var info = await ytdl.getBasicInfo(this.nowPlaying.url);
 
         var length = this.makeVideoLengthReadable(info.length_seconds);
 
@@ -203,11 +197,11 @@ class GuildPlayer {
         message.channel.send("```Now Playing:\n" + songInfoString + "```");
     }
 
-    makeVideoLengthReadable(lengthSeconds){
+    makeVideoLengthReadable(lengthSeconds) {
         var minutes = Math.floor(lengthSeconds / 60);
         var seconds = lengthSeconds % 60;
 
-        if(seconds < 10){
+        if (seconds < 10) {
             seconds = "0" + seconds;
         }
 

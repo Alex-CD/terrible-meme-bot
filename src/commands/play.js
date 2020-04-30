@@ -18,7 +18,7 @@ class Play {
         }
 
         if(command == ""){
-            await this.players.get.resume(message);
+            await this.players.get(message.guild.id).resume();
             return;
         }
 
@@ -27,7 +27,7 @@ class Play {
             await message.delete();
         }
 
-        this.players.get(message.guild.id).play(message, command);
+        this.players.get(message.guild.id).play(message, command, "YOUTUBE");
     }
 }
 

@@ -8,9 +8,15 @@ const PlayersStub = require('./stubs/players_stub');
 describe("player", function(){
     describe("#play", function(){
         
-        it("should ")
+        it("should accept a url parameter", function(){
+            var player = new Player()
+
+        });
+
+
+
         
-        var player = new Player();
+        
     });
 
     describe("#pause", function(){

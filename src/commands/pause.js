@@ -8,9 +8,9 @@ class Pause {
 
     async run(command, message){
 
-        if (bot.isBotConnectedToGuild(message) && this.players.hasPlayer(message.guild.id)) {
+        /*if (bot.isBotConnectedToGuild(message) && this.players.hasPlayer(message.guild.id)) {
             await this.players.get(message.guild.id).pause(message);
-        }
+        }*/
     }
 }
 
