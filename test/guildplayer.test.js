@@ -6,16 +6,15 @@ const MessageStub = require('./stubs/message_stub');
 const PlayersStub = require('./stubs/players_stub');
 
 describe("player", function(){
-    describe("#play", function(){
-        
-        it("should accept a url parameter", function(){
-            var player = new Player()
 
-        });
+    var guildPlayer;
 
 
+    beforeEach(function(){
+        audioQueue = new guildPlayer();
+    });
 
-        
+    describe("#playNext", function(){
         
     });
 
