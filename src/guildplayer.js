@@ -18,6 +18,7 @@ class GuildPlayer {
             this.resume();
         }
 
+
         var videosQueued = await this.audioQueue.add(url, source);
 
 
@@ -50,7 +51,7 @@ class GuildPlayer {
         if (this.state == "STOPPED") {
             var connection = await message.member.voice.channel.join();
             this.playNext(message, connection);
-            return;
+            return;``
         }
     }
 
@@ -58,10 +59,10 @@ class GuildPlayer {
         if (this.state == "PLAYING") {
             if (this.nowPlaying.source != "LOCAL") {
                 this.audioQueue.jumpQueue(this.nowPlaying.url, this.nowPlaying.source);
+                this.audioQueue.jumpQueue(url, source);
+                await this.skip(message);
             }
 
-            this.audioQueue.jumpQueue(url, source);
-            await this.skip(message);
         }
     }
 
@@ -95,11 +96,9 @@ class GuildPlayer {
 
 
     async skip(message) {
-        var connection = await this.getConnection(message);
-        await connection.dispatcher.end();
-
-        if (this.state == "PAUSED") {
-            this.startPlaying(message);
+        if(this.state == "PLAYING"){
+            var connection = await this.getConnection(message);
+            await connection.dispatcher.end();
         }
     }
 
@@ -134,7 +133,7 @@ class GuildPlayer {
     async playNext(message, connection) {
         
         if (this.audioQueue.isEmpty()) {
-            this.state == "STOPPED";
+            this.state = "STOPPED";
             return;
         };
 
@@ -177,8 +176,10 @@ class GuildPlayer {
 
     async playLocal(message, url, connection) {
         var dispatcher = await connection.play(url);
+        dispatcher.setVolume(this.volume);
+
         dispatcher.on('finish', async () => {
-            this.playNext(message, connection)
+            this.playNext(message, connection);
         });
 
         dispatcher.on('error', async () => {
