@@ -1,9 +1,10 @@
 var assert = require('chai').assert;
+
 const AudioQueue= require('../src/audio_queue');
 
 const CommandStub = require('./stubs/command_stub');
 const MessageStub = require('./stubs/message_stub');
-const PlayersStub = require('./stubs/players_stub');
+const PlayerManagerStub = require('./stubs/player_manager_stub');
 
 describe("AudioQueue", function(){
     var audioQueue;
