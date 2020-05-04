@@ -1,9 +1,10 @@
 var assert = require('chai').assert;
+
 const AudioQueue= require('../src/audio_queue');
 
 const CommandStub = require('./stubs/command_stub');
 const MessageStub = require('./stubs/message_stub');
-const PlayersStub = require('./stubs/players_stub');
+const PlayerManagerStub = require('./stubs/player_manager_stub');
 
 describe("AudioQueue", function(){
     var audioQueue;
@@ -16,15 +17,18 @@ describe("AudioQueue", function(){
     describe("#add", function(){
         it("Should accept an address for an item, and add it to the queue", async function(){
             await audioQueue.add("https://www.youtube.com/watch?v=jNQXAC9IVRw", "YOUTUBE");
-            
             assert(audioQueue.items[0].url == "https://youtube.com/watch?v=jNQXAC9IVRw", "YOUTUBE");
         });
 
         it("Should reject an invalid URL", async function(){
             var videosQueued = await audioQueue.add("drewarewarewaeyrdsre", "YOUTUBE")
-            console.log(videosQueued);
             assert(videosQueued == null , "method should return null");
-        });0
+        });
+
+        it("Should reject an empty URL", async function(){
+            var videosQueued = await audioQueue.add("", "YOUTUBE")
+            assert(videosQueued == null , "method should return null");
+        });
 
         it("Should store the source of an audio clip", async function(){
             await audioQueue.add("https://www.youtube.com/watch?v=jNQXAC9IVRw", "YOUTUBE");

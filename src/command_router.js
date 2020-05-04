@@ -1,5 +1,3 @@
-
-
 class CommandRouter {
     constructor(settings, players, commands) {
         this.settings = settings;

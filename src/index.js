@@ -2,13 +2,13 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 const Router = require('./command_router');
-const Players = require('./players');
+const PlayerManager = require('./player_manager');
 
 require('dotenv').config({ path: __dirname + '/../../.env' });
 
 var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX };
 
-var players = new Players();
+var playerMAnager = new PlayerManager();
 
 
 process.title = process.env.PROCESS_TITLE;
@@ -19,11 +19,11 @@ process.title = process.env.PROCESS_TITLE;
 var commands = require('require-all')({
     dirname: __dirname + "/commands",
     resolve: function (command) {
-        return new command(settings, players);
+        return new command(settings, playerMAnager);
     }
 });
 
-var router = new Router(settings, players, commands);
+var router = new Router(settings, playerMAnager, commands);
 
 client.once('ready', () => {
     console.log('Connected');

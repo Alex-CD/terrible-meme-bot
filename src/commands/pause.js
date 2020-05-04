@@ -1,4 +1,4 @@
-const bot = require('../botUtils');
+const bot = require('../bot_utils');
 
 class Pause {
     constructor(settings, players){
@@ -8,9 +8,12 @@ class Pause {
 
     async run(command, message){
 
-        /*if (bot.isBotConnectedToGuild(message) && this.players.hasPlayer(message.guild.id)) {
+        if(bot.isBotConnectedToGuild(message)){
             await this.players.get(message.guild.id).pause(message);
-        }*/
+            return;
+        }
+
+        message.channel.send("Bot isn't connected");
     }
 }
 

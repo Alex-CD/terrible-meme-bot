@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core');
 const ytlist = require('youtube-playlist');
 
-var bot = require('../botUtils');
+var bot = require('../bot_utils');
 
 
 class Play {
@@ -18,7 +18,7 @@ class Play {
         }
 
         if(command == ""){
-            await this.players.get(message.guild.id).resume();
+            await this.players.get(message.guild.id).resume(message);
             return;
         }
 

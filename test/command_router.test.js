@@ -3,14 +3,14 @@ const Router = require('../src/command_router');
 
 const CommandStub = require('./stubs/command_stub');
 const MessageStub = require('./stubs/message_stub');
-const PlayersStub = require('./stubs/players_stub');
+const PlayerManagerStub = require('./stubs/player_manager_stub');
 
 describe("command_router", function(){
     var players;
 
 
     beforeEach(function(){
-        players = new PlayersStub();
+        players = new PlayerManagerStub();
     });
 
     describe("#route", function(){
@@ -81,5 +81,4 @@ describe("command_router", function(){
             assert(router.trimCommand("") === "", "return empty string without erroring");
         });
     });
-
 });
