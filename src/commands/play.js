@@ -18,7 +18,7 @@ class Play {
         }
 
         if(command == ""){
-            await this.players.get(message.guild.id).resume();
+            await this.players.get(message.guild.id).resume(message);
             return;
         }
 

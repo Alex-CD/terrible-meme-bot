@@ -12,7 +12,7 @@ describe("player", function(){
 
 
     beforeEach(function(){
-        audioQueue = new Player();
+        player = new Player();
     });
 
 
@@ -29,6 +29,10 @@ describe("player", function(){
     });
 
     describe("#waitToLeave", function(){
+        it("should disconnect the bot if the bot waits for long enough", function(){
+            player = new Player(0.5);
+            player.waitToDisconnect();
+        })
     });
 
 

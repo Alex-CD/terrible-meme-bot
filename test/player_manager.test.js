@@ -12,8 +12,4 @@ describe("playerManager", function(){
     beforeEach(function(){
         playerManager = new playerManager();
     });
-
-    describe("#playNext", function(){
-        
-    });
 });

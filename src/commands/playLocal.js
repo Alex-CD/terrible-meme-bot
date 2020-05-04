@@ -37,13 +37,11 @@ class PlayLocal {
 
         message.delete();
 
-        if (player.state == "PLAYING") {
+        if (player.isPlaying) {
             await player.interrupt(message, toPlay, "LOCAL" );
         } else { 
             await player.play(message, toPlay, "LOCAL");
         }
-
-       
     }
 
     loadAudioFiles() {
