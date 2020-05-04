@@ -1,21 +1,28 @@
 const fs = require('fs');
+const util = require('util');
+
 const random = require('random');
 const bot = require('../bot_utils');
 
 
 class PlayLocal {
-    constructor(settings, players) {
+   constructor(settings, players) {
         this.players = players;
         this.aliases = ["v"];
         this.audioDir = process.env.LOCAL_AUDIO_DIR + "/"
-        this.audioFiles = new Map();
-        this.loadAudioFiles();
+        this.audioFiles = this.loadAudioFilesSync(this.audioDir);
     }
 
     async run(command, message) {
 
         if (command == "help") {
             this.printCommands(message);
+            return;
+        }
+
+        if(command == "rescan"){
+            this.audioFiles = await this.loadAudioFilesAsync(this.audioDir);
+            await message.channel.send("Audio files reloaded.");
             return;
         }
 
@@ -44,14 +51,31 @@ class PlayLocal {
         }
     }
 
-    loadAudioFiles() {
-        console.log("Loading audio files from " + this.audioDir);
-        var directories = fs.readdirSync(this.audioDir);
+    loadAudioFilesSync(audioDir){
 
+        var newFiles = new Map();
+        
+        var directories = fs.readdirSync(audioDir);
         for (var i = 0; i < directories.length; i++) {
-            var files = fs.readdirSync(this.audioDir + directories[i]);
-            this.audioFiles.set(directories[i], files);
+            var files = fs.readdirSync(audioDir + directories[i]);
+            newFiles.set(directories[i], files);
         }
+
+        return newFiles;
+    }
+
+
+    loadAudioFilesAsync(audioDir){
+
+        var newFiles = new Map();
+        
+        var directories = util.promisify(fs.readdirSync)(audioDir);
+        for (var i = 0; i < directories.length; i++) {
+            var files = util.promisify(fs.readdirSync)(audioDir + directories[i]);
+            newFiles.set(directories[i], files);
+        }
+
+        return newFiles;
     }
 
     printCommands(message) {
