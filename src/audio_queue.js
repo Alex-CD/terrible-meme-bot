@@ -9,7 +9,11 @@ class AudioQueue {
         this.items = [];
     }
 
-    async add(url, source) {
+    async add(url, source){
+
+        if(url == "" || url == null ){
+            return null;
+        }
 
         switch (source) {
             case "YOUTUBE":
