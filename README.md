@@ -45,6 +45,15 @@ Your folder should resemble this:
 - terrible-meme-bot (contains this repo)
 ```
 
+and your .env should look something like this:
+
+```
+PROCESS_TITLE=terrible_meme_bot
+LOCAL_AUDIO_DIR=../audio
+DISCORD_TOKEN=[YOUR TOKEN HERE]
+DEFAULT_COMMAND_PREFIX=!
+DEFAULT_BOT_TIMEOUT_MINUTES=10
+```
 
 Then run
 
