@@ -1,5 +1,5 @@
 var random = require('random');
-const bot = require('../botUtils');
+const bot = require('../bot_utils');
 
 class RussianRoulette {
     constructor(){

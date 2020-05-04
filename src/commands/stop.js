@@ -1,4 +1,4 @@
-const bot = require('../botUtils');
+const bot = require('../bot_utils');
 
 class Stop {
     constructor(settings, players) {

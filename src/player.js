@@ -1,11 +1,11 @@
 
-var audio_queue = require('./audio_queue');
+var AudioQueue = require('./audio_queue');
 
 const ytdl = require('ytdl-core');
 
 class GuildPlayer {
     constructor() {
-        this.audioQueue = new audio_queue();
+        this.audioQueue = new AudioQueue();
         this.state = "STOPPED";
         this.volume = 1.0;
         this.nowPlaying = { url: "", source: "" };

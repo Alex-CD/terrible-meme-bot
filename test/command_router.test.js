@@ -82,4 +82,9 @@ describe("command_router", function(){
         });
     });
 
+
+    describe("#waitToLeave", function(){
+
+    
+    });
 });

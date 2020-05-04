@@ -1,6 +1,6 @@
 const fs = require('fs');
 const random = require('random');
-const bot = require('../botUtils');
+const bot = require('../bot_utils');
 
 
 class PlayLocal {

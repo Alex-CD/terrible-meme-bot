@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-const Player = require('../src/guildplayer');
+const Player = require('../src/player');
 
 const CommandStub = require('./stubs/command_stub');
 const MessageStub = require('./stubs/message_stub');
