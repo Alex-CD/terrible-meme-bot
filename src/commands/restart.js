@@ -1,11 +1,11 @@
 class Restart {
-    constructor(){
-        this.aliases = ["restart"];
-    }
+  constructor () {
+    this.aliases = ['restart']
+  }
 
-    run(command, message){
-        process.kill(process.pid, "SIGINT");
-    }
+  run (command, message) {
+    process.kill(process.pid, 'SIGINT')
+  }
 }
 
-module.exports = Restart;
+module.exports = Restart

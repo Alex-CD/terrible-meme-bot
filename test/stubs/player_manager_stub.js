@@ -1,7 +1,4 @@
 class PlayersStub {
-    constructor() {
-        
-    }
 }
 
-module.exports = PlayersStub;
+module.exports = PlayersStub

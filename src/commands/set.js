@@ -1,13 +1,11 @@
 class Set {
-    constructor(){
-        this.aliases = ["set"]
-    }
+  constructor () {
+    this.aliases = ['set']
+  }
 
-    run(command, message){
+  run (command, message) {
 
-    }
-
-
+  }
 }
 
-module.exports = Set;
+module.exports = Set

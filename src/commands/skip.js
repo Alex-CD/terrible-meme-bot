@@ -1,12 +1,12 @@
 class Skip {
-    constructor(settings, players) {
-        this.players = players;
-        this.aliases = ["skip"];
-    }
+  constructor (settings, players) {
+    this.players = players
+    this.aliases = ['skip']
+  }
 
-    async run(command, message) {
-        await this.players.get(message.guild.id).skip(message);
-    }
+  async run (command, message) {
+    await this.players.get(message.guild.id).skip(message)
+  }
 }
 
-module.exports = Skip;
+module.exports = Skip
