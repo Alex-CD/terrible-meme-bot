@@ -4,7 +4,7 @@ const client = new Discord.Client();
 const Router = require('./command_router');
 const PlayerManager = require('./player_manager');
 
-require('dotenv').config({ path: __dirname + '/../../.env' });
+require('dotenv').config({ path: __dirname + '/../.env' });
 
 var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX };
 
@@ -40,4 +40,3 @@ process.on("SIGINT", ()=>{
     client.destroy();
     process.exit();
 });
-
