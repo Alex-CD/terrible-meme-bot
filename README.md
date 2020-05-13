@@ -19,9 +19,7 @@ A less serious Discord bot, powered by NodeJS and Discord.js
 You can run this just like any other NodeJS project, but it needs these two items:
 
 - A .env file for storing bot settings
-- An audio folder, whose path is defined in .env
-
-.env need to be in the directory **above** the folder that contains the contents of this repo. By default, the program also looks in the same folder for an audio storage directory.
+- An audio folder, whose path is defined in .env. This will default to the proejct folder.
 
 
 ### Prerequisites
@@ -69,7 +67,8 @@ npm start
 ## Contributions
 
 This project is open to contributions!
-Please make sure your build runs locally and passes CI checks (if these are turned on) before you open a pull request.
+Please make sure your build runs locally, has no linting errors, passes CI checks  before you open a pull request.
+
 Cheers!
 
 
