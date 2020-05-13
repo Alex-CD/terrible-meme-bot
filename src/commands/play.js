@@ -1,4 +1,3 @@
-var bot = require('../bot_utils')
 
 class Play {
   constructor (settings, players) {
@@ -6,23 +5,23 @@ class Play {
     this.players = players
   }
 
-  async run (command, message) {
-    if (!bot.isUserConnected) {
-      message.channel.send('You need to be in a channel to request songs.')
+  async run (request) {
+    if (!request.isAuthorConnected()) {
+      request.reply('You need to be in a channel to request songs.')
       return
     }
 
-    if (command === '') {
-      await this.players.get(message.guild.id).resume(message)
+    if (request.content === '') {
+      await this.players.get(request.guildID).resume(request)
       return
     }
 
     // if message is 'hidden youtube'
-    if (message.content.slice(1).split(' ')[0] === 'hyt') {
-      await message.delete()
+    if (request.command === 'hyt') {
+      await request.deleteMessage()
     }
 
-    this.players.get(message.guild.id).play(message, command, 'YOUTUBE')
+    this.players.get(request.guildID).play(request, request.content, 'YOUTUBE')
   }
 }
 

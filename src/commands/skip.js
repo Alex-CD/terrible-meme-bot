@@ -4,8 +4,8 @@ class Skip {
     this.aliases = ['skip']
   }
 
-  async run (command, message) {
-    await this.players.get(message.guild.id).skip(message)
+  async run (request) {
+    await this.players.get(request.guildID).skip(request)
   }
 }
 

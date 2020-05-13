@@ -16,9 +16,9 @@ class GuildPlayer {
     this.nowPlaying = { url: '', source: '' }
   }
 
-  async play (message, url, source) {
+  async play (request, url, source) {
     if (this.isPaused) {
-      this.stop(message)
+      this.stop(request)
     }
 
     var videosQueued = await this.audioQueue.add(url, source)
@@ -26,28 +26,28 @@ class GuildPlayer {
     if (source === 'YOUTUBE') {
       switch (true) {
         case videosQueued === 0:
-          message.channel.send('Error fetching playlist. Sorry! This is a bug with youtube.' +
+          request.reply('Error fetching playlist. Sorry! This is a bug with youtube.' +
             'Rerequesting the playlist usually works.')
           return
         case videosQueued === 1:
-          message.channel.send('Song queued.')
+          request.reply('Song queued.')
           break
         case videosQueued > 1:
-          message.channel.send('Enqueued ' + videosQueued + ' songs')
+          request.reply('Enqueued ' + videosQueued + ' songs')
           break
         default:
-          message.channel.send('Invalid video/playlist url')
+          request.reply('Invalid video/playlist url')
           return
       }
     }
 
     if (!this.isPlaying) {
-      var connection = await message.member.voice.channel.join()
-      await this.playNext(message, connection)
+      var connection = await request.joinAuthorVoiceChannel()
+      await this.playNext(request, connection)
     }
   }
 
-  async interrupt (message, url, source) {
+  async interrupt (request, url, source) {
     if (this.isPlaying && !this.isPaused) {
       // !v requeues non-local clips
       if (this.nowPlaying.source !== 'LOCAL') {
@@ -55,24 +55,24 @@ class GuildPlayer {
       }
 
       this.audioQueue.jumpQueue(url, source)
-      await this.skip(message)
+      await this.skip(request)
     } else {
-      this.play(message, url, source)
+      this.play(request, url, source)
     }
   }
 
-  async pause (message) {
+  async pause (request) {
     if (this.isPlaying && !this.isPaused) {
-      var connection = await this.getConnection(message)
+      var connection = await this.getConnection(request)
       await connection.dispatcher.pause()
 
       this.isPaused = true
     }
   }
 
-  async resume (message) {
+  async resume (request) {
     if (this.isPlaying && this.isPaused) {
-      var connection = await this.getConnection(message)
+      var connection = await this.getConnection(request)
       if (connection) {
         await connection.dispatcher.resume()
 
@@ -82,50 +82,49 @@ class GuildPlayer {
       return
     }
 
-    message.channel.send('Player is not paused.')
+    request.reply('Player is not paused.')
   }
 
-  async getConnection (message) {
-    var thisConnection = await message.client.voice.connections.filter((connection) => {
-      return connection.channel.id === message.guild.me.voice.channel.id
+  async getConnection (request) {
+    var thisConnection = await request.message.client.voice.connections.filter((connection) => {
+      return connection.channel.id === request.message.guild.me.voice.channel.id
     })
-
     return thisConnection.first()
   }
 
-  async skip (message) {
+  async skip (request) {
     if (this.isPlaying || this.isPaused) {
-      var connection = await this.getConnection(message)
+      var connection = await this.getConnection(request)
       await connection.dispatcher.end()
     }
   }
 
-  async stop (message) {
+  async stop (request) {
     this.audioQueue.clear()
     this.isPlaying = false
     this.isPaused = false
 
-    var connection = await this.getConnection(message)
+    var connection = await this.getConnection(request)
     if (connection.dispatcher) {
       await connection.dispatcher.end()
     }
   }
 
-  async setVolume (message, volume) {
+  async setVolume (request, volume) {
     if (volume < 0.1 || volume > 100) return
 
     this.volume = volume
-    var connection = await this.getConnection(message)
+    var connection = await this.getConnection(request)
     if (connection.dispatcher !== undefined) {
       await connection.dispatcher.setVolume(volume)
     }
   }
 
-  async playNext (message, connection) {
+  async playNext (request, connection) {
     if (this.audioQueue.isEmpty()) {
       this.isPlaying = false
       this.isPaused = false
-      this.waitToDisconnect(message)
+      this.waitToDisconnect(request)
       return
     }
 
@@ -139,51 +138,51 @@ class GuildPlayer {
 
     switch (toPlay.source) {
       case 'YOUTUBE':
-        await this.playYoutubeVideo(message, toPlay.url, connection)
+        await this.playYoutubeVideo(request, toPlay.url, connection)
         break
       case 'LOCAL':
-        await this.playLocal(message, toPlay.url, connection)
+        await this.playLocal(request, toPlay.url, connection)
         break
     }
   }
 
-  async playYoutubeVideo (message, url, connection) {
+  async playYoutubeVideo (request, url, connection) {
     const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' })
     var dispatcher = await connection.play(stream)
     dispatcher.setVolume(this.volume)
 
     this.nowPlaying.source = 'YOUTUBE'
-    this.printSongInfo(message)
+    this.printSongInfo(request)
 
     dispatcher.on('finish', () => {
-      this.playNext(message, connection)
+      this.playNext(request, connection)
     })
 
     dispatcher.on('error', () => {
-      this.playNext(message, connection)
+      this.playNext(request, connection)
     })
   }
 
-  async playLocal (message, url, connection) {
+  async playLocal (request, url, connection) {
     var dispatcher = await connection.play(url)
     dispatcher.setVolume(this.volume)
 
     dispatcher.on('finish', async () => {
-      this.playNext(message, connection)
+      this.playNext(request, connection)
     })
 
     dispatcher.on('error', async () => {
-      this.playNext(message, connection)
+      this.playNext(request, connection)
     })
   }
 
-  async printSongInfo (message) {
+  async printSongInfo (request) {
     var info = await ytdl.getBasicInfo(this.nowPlaying.url)
 
     var length = this.makeVideoLengthReadable(info.length_seconds)
 
     var songInfoString = info.title + '\n' + length
-    message.channel.send('```Now Playing:\n' + songInfoString + '```')
+    request.reply('```Now Playing:\n' + songInfoString + '```')
   }
 
   makeVideoLengthReadable (lengthSeconds) {
@@ -197,7 +196,7 @@ class GuildPlayer {
     return minutes + ':' + seconds
   }
 
-  async waitToDisconnect (message) {
+  async waitToDisconnect (request) {
     var thisFinishTime = Date.now()
     this.lastFinishTime = thisFinishTime
 
@@ -211,7 +210,7 @@ class GuildPlayer {
       }
 
       if ((Date.now() - thisFinishTime) > parent.idleDisconnectDelayMS) {
-        message.guild.me.voice.setChannel(null, 'bot is idle - disconnecting.')
+        request.message.guild.me.voice.setChannel(null, 'bot is idle - disconnecting.')
         clearInterval(interval)
       }
     }, 1000)

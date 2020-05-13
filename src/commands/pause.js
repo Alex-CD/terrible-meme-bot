@@ -1,4 +1,3 @@
-const bot = require('../bot_utils')
 
 class Pause {
   constructor (settings, players) {
@@ -6,13 +5,13 @@ class Pause {
     this.aliases = ['pause']
   }
 
-  async run (command, message) {
-    if (bot.isBotConnectedToGuild(message)) {
-      await this.players.get(message.guild.id).pause(message)
+  async run (request) {
+    if (request.isBotConnectedToGuild) {
+      await this.players.get(request.guildID).pause(request)
       return
     }
 
-    message.channel.send('Bot isn\'t connected')
+    request.reply('Bot isn\'t connected')
   }
 }
 

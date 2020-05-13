@@ -3,7 +3,7 @@ class Set {
     this.aliases = ['set']
   }
 
-  run (command, message) {
+  async run (request) {
 
   }
 }

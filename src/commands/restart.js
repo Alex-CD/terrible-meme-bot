@@ -3,7 +3,7 @@ class Restart {
     this.aliases = ['restart']
   }
 
-  run (command, message) {
+  async run (request) {
     process.kill(process.pid, 'SIGINT')
   }
 }

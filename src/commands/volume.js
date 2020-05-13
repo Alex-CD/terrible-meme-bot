@@ -4,14 +4,14 @@ class Volume {
     this.aliases = ['volume']
   }
 
-  run (command, message) {
-    var volume = parseFloat(command)
+  async run (request) {
+    var volume = parseFloat(request.text)
 
     if (isNaN(volume)) {
-      message.channel.send('Invalid volume')
+      request.reply('Invalid volume')
     }
 
-    this.players.get(message.guild.id).setVolume(message, volume)
+    this.players.get(request.guildID).setVolume(request, volume)
   }
 }
 

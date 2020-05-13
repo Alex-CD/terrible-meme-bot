@@ -4,6 +4,7 @@ const path = require('path')
 
 const Router = require('./command_router')
 const PlayerManager = require('./player_manager')
+const Request = require('./request')
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 
@@ -30,7 +31,7 @@ client.once('ready', () => {
 client.login(process.env.DISCORD_TOKEN)
 
 client.on('message', message => {
-  router.route(message, message.content)
+  router.route(new Request(message))
 })
 
 process.on('SIGINT', () => {

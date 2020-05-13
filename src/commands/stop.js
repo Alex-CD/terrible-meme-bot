@@ -1,4 +1,3 @@
-const bot = require('../bot_utils')
 
 class Stop {
   constructor (settings, players) {
@@ -6,10 +5,10 @@ class Stop {
     this.aliases = ['stop']
   }
 
-  async run (command, message) {
-    if (bot.isBotConnectedToGuild(message)) {
-      var player = this.players.get(message.guild.id)
-      await player.stop(message)
+  async run (request) {
+    if (request.isBotConnectedToGuild()) {
+      var player = this.players.get(request.guildID)
+      await player.stop(request)
     }
   }
 }

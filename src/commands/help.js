@@ -3,8 +3,8 @@ class Help {
     this.aliases = ['help', 'commands']
   }
 
-  run (command, message) {
-    message.channel.send('Available commands: !help, !info, !play, !pause, !skip, !stop, !v, !volume, !russianroulette')
+  async run (request) {
+    request.reply('Available commands: !help, !info, !play, !pause, !skip, !stop, !v, !volume, !russianroulette')
   }
 }
 

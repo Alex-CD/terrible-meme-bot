@@ -3,9 +3,9 @@ class Ping {
     this.aliases = ['ping']
   }
 
-  run (command, message) {
-    var diff = Date.now() - message.createdAt
-    message.channel.send('Pong: ' + diff + 'ms')
+  async run (request) {
+    var diff = Date.now() - request.message.createdAt
+    request.reply('Pong: ' + diff + 'ms')
   }
 }
 

@@ -2,7 +2,6 @@ const fs = require('fs')
 const util = require('util')
 
 const random = require('random')
-const bot = require('../bot_utils')
 
 class PlayLocal {
   constructor (settings, players) {
@@ -12,39 +11,39 @@ class PlayLocal {
     this.audioFiles = this.loadAudioFilesSync(this.audioDir)
   }
 
-  async run (command, message) {
-    if (command === 'help') {
-      this.printCommands(message)
+  async run (request) {
+    if (request.content === 'help') {
+      this.printCommands(request)
       return
     }
 
-    if (command === 'rescan') {
+    if (request.content === 'rescan') {
       this.audioFiles = await this.loadAudioFilesAsync(this.audioDir)
-      await message.channel.send('Audio files reloaded.')
+      await request.reply('Audio files reloaded.')
       return
     }
 
-    if (!bot.isUserConnected(message)) {
-      message.channel.send('You need to be in a voice channel to play audio')
+    if (!request.isAuthorConnected()) {
+      request.reply('You need to be in a voice channel to play audio')
       return
     }
 
-    var requestedFiles = this.audioFiles.get(command)
+    var requestedFiles = this.audioFiles.get(request.content)
 
     if (!requestedFiles) {
-      message.channel.send('Unknown audio clip')
+      request.reply('Unknown audio clip')
       return
     }
 
-    var player = this.players.get(message.guild.id)
-    var toPlay = this.audioDir + command + '/' + requestedFiles[random.int(0, requestedFiles.length - 1)]
+    var player = this.players.get(request.guildID)
+    var toPlay = this.audioDir + request.content + '/' + requestedFiles[random.int(0, requestedFiles.length - 1)]
 
-    message.delete()
+    request.deleteMessage()
 
     if (player.isPlaying) {
-      await player.interrupt(message, toPlay, 'LOCAL')
+      await player.interrupt(request, toPlay, 'LOCAL')
     } else {
-      await player.play(message, toPlay, 'LOCAL')
+      await player.play(request, toPlay, 'LOCAL')
     }
   }
 
@@ -60,19 +59,19 @@ class PlayLocal {
     return newFiles
   }
 
-  loadAudioFilesAsync (audioDir) {
+  async loadAudioFilesAsync (audioDir) {
     var newFiles = new Map()
 
     var directories = util.promisify(fs.readdirSync)(audioDir)
     for (var i = 0; i < directories.length; i++) {
-      var files = util.promisify(fs.readdirSync)(audioDir + directories[i])
+      var files = await util.promisify(fs.readdirSync)(audioDir + directories[i])
       newFiles.set(directories[i], files)
     }
 
     return newFiles
   }
 
-  printCommands (message) {
+  printCommands (request) {
     var out = '```Use !v [sound] to play a sound.\nAvailable commands: '
 
     var keys = this.audioFiles.keys()
@@ -88,7 +87,7 @@ class PlayLocal {
 
     out += '```'
 
-    message.channel.send(out)
+    request.reply(out)
   }
 }
 
