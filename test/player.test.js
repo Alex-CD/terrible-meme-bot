@@ -6,7 +6,7 @@ var beforeEach = require('mocha').beforeEach
 var util = require('util')
 
 const Player = require('../src/player')
-const MessageStub = require('./stubs/message_stub')
+const RequestStub = require('./stubs/request_stub')
 
 describe('player', function () {
   var player
@@ -31,23 +31,32 @@ describe('player', function () {
     it('should disconnect the bot if the bot waits for long enough', async function () {
       player.idleDisconnectDelayMS = 30
 
-      var message = new MessageStub()
+      var request = new RequestStub({ isConnected: true })
 
-      await player.waitToDisconnect(message)
+      await player.waitToDisconnect(request)
       await util.promisify(setTimeout)(1500)
 
-      assert(message.voiceChannel == null, 'The bot\'s channel should have been set to null')
+      assert(!request.state.isConnected, 'The bot\'s channel should have been set to null')
     })
 
     it('should not disconnect the bot if lastPlay is changed', async function () {
       player.idleDisconnectDelayMS = 100
 
-      var message = new MessageStub()
-      await player.waitToDisconnect(message)
+      var request = new RequestStub({ isConnected: true })
+      await player.waitToDisconnect(request)
       player.lastFinishTime = Date.now()
-      await util.promisify(setTimeout)(100)
+      await util.promisify(setTimeout)(200)
+      assert(request.state.isConnected, 'The bot should not have been disconnected')
+    })
 
-      assert(message.state.voiceChannel === '000', 'The bot\'s channel should have been left unchanged')
+    it('should not disconnect if isplaying is changed', async function () {
+      player.idleDisconnectDelayMS = 100
+
+      var request = new RequestStub({ isConnected: true })
+      await player.waitToDisconnect(request)
+      player.isPlaying = true
+      await util.promisify(setTimeout)(200)
+      assert(request.state.isConnected, 'The bot should not have been disconnected')
     })
   })
 })

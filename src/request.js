@@ -18,6 +18,10 @@ class Request {
     }
   }
 
+  startsWithPrefix (prefix) {
+    return this.message.content.startsWith(prefix)
+  }
+
   getJoinableVoiceChannels () {
     return this.message.guild.channels.cache.filter((channel) => {
       return (channel.type === 'voice' && channel.joinable)
@@ -49,6 +53,10 @@ class Request {
     if (this.message.channel.manageable) {
       this.message.delete()
     }
+  }
+
+  disconnectBot (reason) {
+    this.message.guild.me.voice.setChannel(null, reason)
   }
 
   isAuthorConnected () {

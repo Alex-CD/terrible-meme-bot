@@ -6,7 +6,7 @@ class CommandRouter {
 
   route (request) {
     // Ignore messages that don't start with a prefix, are a PM, or come from another bot
-    if (!request.message.content.startsWith(this.settings.prefix) || request.authorIsBot() || !request.isFromGuildTextChannel()) return
+    if (!request.startsWithPrefix(this.settings.prefix) || request.authorIsBot() || !request.isFromGuildTextChannel()) return
     request.parseRequestText()
 
     // Match requested command aliases
@@ -14,7 +14,9 @@ class CommandRouter {
       var aliases = this.commands[module].aliases
 
       for (var a = 0; a < aliases.length; a++) {
+        console.log(request.command  + " : " + this.settings.prefix + aliases[a])
         if (request.command === this.settings.prefix + aliases[a]) {
+          console.log("MATCHED")
           this.commands[module].run(request)
         }
       }

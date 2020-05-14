@@ -204,13 +204,15 @@ class GuildPlayer {
 
     // Check every second if bot should disconnect, or stop waiting
     var interval = setInterval(function () {
+      // Stop waiting if bot activity happens.
       if (thisFinishTime !== parent.lastFinishTime || parent.isPlaying) {
         clearInterval(interval)
         return
       }
 
+      // Disconnect if bot exceeds max afk time
       if ((Date.now() - thisFinishTime) > parent.idleDisconnectDelayMS) {
-        request.message.guild.me.voice.setChannel(null, 'bot is idle - disconnecting.')
+        request.disconnectBot(null, 'bot is idle - disconnecting.')
         clearInterval(interval)
       }
     }, 1000)
