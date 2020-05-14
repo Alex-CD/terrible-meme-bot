@@ -1,19 +1,17 @@
-class Volume  {
-    constructor(settings, players){
-        this.players = players;
-        this.aliases = ["volume"];
+class Volume {
+  constructor (settings, players) {
+    this.players = players
+    this.aliases = ['volume', 'setvolume']
+  }
+
+  async run (request) {
+    var volume = Number.parseInt(request.content)
+    if (isNaN(volume) || volume < 0 || volume > 9999) {
+      request.reply('Volume must be an integer (0-100)')
+      return
     }
-
-    run(command, message){
-
-        var volume = parseFloat(command);
-
-        if(volume == NaN){
-            message.channel.send("Invalid volume");
-        }
-        
-        var player = this.players.get(message.guild.id).setVolume(message, volume);
-    }
+    this.players.get(request.guildID).setVolume(request, volume)
+  }
 }
 
-module.exports = Volume;
+module.exports = Volume

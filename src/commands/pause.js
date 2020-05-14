@@ -1,20 +1,18 @@
-const bot = require('../bot_utils');
 
 class Pause {
-    constructor(settings, players){
-        this.players = players;
-        this.aliases = ["pause"];
+  constructor (settings, players) {
+    this.players = players
+    this.aliases = ['pause']
+  }
+
+  async run (request) {
+    if (request.isBotConnectedToGuild) {
+      await this.players.get(request.guildID).pause(request)
+      return
     }
 
-    async run(command, message){
-
-        if(bot.isBotConnectedToGuild(message)){
-            await this.players.get(message.guild.id).pause(message);
-            return;
-        }
-
-        message.channel.send("Bot isn't connected");
-    }
+    request.reply('Bot isn\'t connected')
+  }
 }
 
-module.exports = Pause;
+module.exports = Pause
