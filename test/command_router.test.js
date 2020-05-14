@@ -22,7 +22,6 @@ describe('command_router', function () {
 
       var request = new RequestStub({ text: '!test' })
       router.route(request)
-      console.log(commands.test)
       assert(commands.test.hasRun, 'the correct command should have run')
     })
 

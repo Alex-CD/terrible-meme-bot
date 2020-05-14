@@ -14,9 +14,7 @@ class CommandRouter {
       var aliases = this.commands[module].aliases
 
       for (var a = 0; a < aliases.length; a++) {
-        console.log(request.command  + " : " + this.settings.prefix + aliases[a])
         if (request.command === this.settings.prefix + aliases[a]) {
-          console.log("MATCHED")
           this.commands[module].run(request)
         }
       }

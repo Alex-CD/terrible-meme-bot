@@ -33,7 +33,6 @@ class Request {
   }
 
   isFromGuildTextChannel () {
-    console.log(this.message.channel.type)
     return this.message.channel.type === 'text'
   }
 
