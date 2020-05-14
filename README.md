@@ -19,8 +19,7 @@ A less serious Discord bot, powered by NodeJS and Discord.js
 You can run this just like any other NodeJS project, but it needs these two items:
 
 - A .env file for storing bot settings
-- An audio folder, whose path is defined in .env. This will default to the proejct folder.
-
+- An audio folder, whose path is defined in .env.
 
 ### Prerequisites
 
@@ -46,7 +45,7 @@ Your folder should resemble this:
 and your .env should look something like this:
 
 ```
-PROCESS_TITLE=terrible_meme_bot
+PROCESS_TITLE=tmb
 LOCAL_AUDIO_DIR=../audio
 DISCORD_TOKEN=[YOUR TOKEN HERE]
 DEFAULT_COMMAND_PREFIX=!
@@ -57,7 +56,7 @@ Then run
 
 
 ```
-cd terrible-meme-bot (or whatever you've named it to)
+cd terrible-meme-bot
 npm install
 npm start 
 
