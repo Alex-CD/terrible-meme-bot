@@ -12,7 +12,7 @@ class GuildPlayer {
     this.isPlaying = false
     this.isPaused = false
 
-    this.volume = 1.0
+    this.volume = 0.5
     this.nowPlaying = { url: '', source: '' }
   }
 
@@ -62,11 +62,15 @@ class GuildPlayer {
   }
 
   async pause (request) {
-    if (this.isPlaying && !this.isPaused) {
-      var connection = await this.getConnection(request)
-      await connection.dispatcher.pause()
+    try {
+      if (this.isPlaying && !this.isPaused) {
+        var connection = await this.getConnection(request)
+        await connection.dispatcher.pause()
 
-      this.isPaused = true
+        this.isPaused = true
+      }
+    } catch (error) {
+      console.log('ERROR: Pause - ' + error)
     }
   }
 
@@ -111,12 +115,17 @@ class GuildPlayer {
   }
 
   async setVolume (request, volume) {
-    if (volume < 0.1 || volume > 100) return
+    if (!Number.isInteger(volume) || volume < 0 || volume > 9999) return
 
-    this.volume = volume
-    var connection = await this.getConnection(request)
-    if (connection.dispatcher !== undefined) {
-      await connection.dispatcher.setVolume(volume)
+    this.volume = volume / 100.0
+
+    try {
+      var connection = await this.getConnection(request)
+      if (connection.dispatcher !== undefined) {
+        await connection.dispatcher.setVolume(this.volume)
+      }
+    } catch (error) {
+      console.log('ERROR: volume - ' + error)
     }
   }
 
@@ -127,7 +136,6 @@ class GuildPlayer {
       this.waitToDisconnect(request)
       return
     }
-
     var toPlay = this.audioQueue.get()
 
     this.nowPlaying.url = toPlay.url
@@ -148,7 +156,7 @@ class GuildPlayer {
 
   async playYoutubeVideo (request, url, connection) {
     try {
-      console.log(this.nowPlaying)
+      console.log('INFO:PLAYING - ' + this.nowPlaying)
       const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' })
       var dispatcher = await connection.play(stream)
       dispatcher.setVolume(this.volume)
@@ -165,7 +173,8 @@ class GuildPlayer {
       })
     } catch (error) {
       console.log('ERORR: YT - ' + this.nowPlaying + '\n' + error)
-      this.playNext(request, connection)
+      var newConnection = await request.joinAuthorVoiceChannel()
+      this.playNext(request, newConnection)
     }
   }
 
