@@ -1,6 +1,4 @@
 const fs = require('fs')
-const util = require('util')
-
 const random = require('random')
 
 class PlayLocal {
@@ -60,15 +58,18 @@ class PlayLocal {
   }
 
   async loadAudioFilesAsync (audioDir) {
-    var newFiles = new Map()
+    try {
+      var newFiles = new Map()
+      var directories = await fs.promises.readdir(audioDir)
+      for (var i = 0; i < directories.length; i++) {
+        var files = await fs.promises.readdir(audioDir + directories[i])
+        newFiles.set(directories[i], files)
+      }
 
-    var directories = util.promisify(fs.readdirSync)(audioDir)
-    for (var i = 0; i < directories.length; i++) {
-      var files = await util.promisify(fs.readdirSync)(audioDir + directories[i])
-      newFiles.set(directories[i], files)
+      return newFiles
+    } catch (error) {
+      console.log('ERORR: LocalScan - ' + error)
     }
-
-    return newFiles
   }
 
   printCommands (request) {
