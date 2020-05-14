@@ -38,3 +38,7 @@ process.on('SIGINT', () => {
   client.destroy()
   process.exit()
 })
+
+process.on('unhandledRejection', (error) => {
+  console.log('Unhandled promise rejection:' + error)
+})

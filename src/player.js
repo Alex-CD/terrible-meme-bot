@@ -3,7 +3,7 @@ var AudioQueue = require('./audio_queue')
 const ytdl = require('ytdl-core')
 
 class GuildPlayer {
-  constructor(idleDisconnectDelayMinutes) {
+  constructor (idleDisconnectDelayMinutes) {
     this.idleDisconnectDelayMS = idleDisconnectDelayMinutes * 60 * 1000
     this.audioQueue = new AudioQueue()
 
@@ -16,7 +16,7 @@ class GuildPlayer {
     this.nowPlaying = { url: '', source: '' }
   }
 
-  async play(request, url, source) {
+  async play (request, url, source) {
     if (this.isPaused) {
       this.stop(request)
     }
@@ -47,7 +47,7 @@ class GuildPlayer {
     }
   }
 
-  async interrupt(request, url, source) {
+  async interrupt (request, url, source) {
     if (this.isPlaying && !this.isPaused) {
       // !v requeues non-local clips
       if (this.nowPlaying.source !== 'LOCAL') {
@@ -61,7 +61,7 @@ class GuildPlayer {
     }
   }
 
-  async pause(request) {
+  async pause (request) {
     if (this.isPlaying && !this.isPaused) {
       var connection = await this.getConnection(request)
       await connection.dispatcher.pause()
@@ -70,7 +70,7 @@ class GuildPlayer {
     }
   }
 
-  async resume(request) {
+  async resume (request) {
     if (this.isPlaying && this.isPaused) {
       var connection = await this.getConnection(request)
       if (connection) {
@@ -85,21 +85,21 @@ class GuildPlayer {
     request.reply('Player is not paused.')
   }
 
-  async getConnection(request) {
+  async getConnection (request) {
     var thisConnection = await request.message.client.voice.connections.filter((connection) => {
       return connection.channel.id === request.message.guild.me.voice.channel.id
     })
     return thisConnection.first()
   }
 
-  async skip(request) {
+  async skip (request) {
     if (this.isPlaying || this.isPaused) {
       var connection = await this.getConnection(request)
       await connection.dispatcher.end()
     }
   }
 
-  async stop(request) {
+  async stop (request) {
     this.audioQueue.clear()
     this.isPlaying = false
     this.isPaused = false
@@ -110,7 +110,7 @@ class GuildPlayer {
     }
   }
 
-  async setVolume(request, volume) {
+  async setVolume (request, volume) {
     if (volume < 0.1 || volume > 100) return
 
     this.volume = volume
@@ -120,7 +120,7 @@ class GuildPlayer {
     }
   }
 
-  async playNext(request, connection) {
+  async playNext (request, connection) {
     if (this.audioQueue.isEmpty()) {
       this.isPlaying = false
       this.isPaused = false
@@ -146,8 +146,7 @@ class GuildPlayer {
     }
   }
 
-  async playYoutubeVideo(request, url, connection) {
-
+  async playYoutubeVideo (request, url, connection) {
     try {
       console.log(this.nowPlaying)
       const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' })
@@ -170,7 +169,7 @@ class GuildPlayer {
     }
   }
 
-  async playLocal(request, url, connection) {
+  async playLocal (request, url, connection) {
     try {
       var dispatcher = await connection.play(url)
       dispatcher.setVolume(this.volume)
@@ -187,8 +186,7 @@ class GuildPlayer {
     }
   }
 
-  async printSongInfo(request) {
-
+  async printSongInfo (request) {
     var info = await ytdl.getBasicInfo(this.nowPlaying.url)
 
     if (info.title === undefined || isNaN(info.length_seconds)) return
@@ -199,7 +197,7 @@ class GuildPlayer {
     request.reply('```Now Playing:\n' + songInfoString + '```')
   }
 
-  makeVideoLengthReadable(lengthSeconds) {
+  makeVideoLengthReadable (lengthSeconds) {
     var minutes = Math.floor(lengthSeconds / 60)
     var seconds = lengthSeconds % 60
 
@@ -210,7 +208,7 @@ class GuildPlayer {
     return minutes + ':' + seconds
   }
 
-  async waitToDisconnect(request) {
+  async waitToDisconnect (request) {
     var thisFinishTime = Date.now()
     this.lastFinishTime = thisFinishTime
 
