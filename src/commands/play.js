@@ -7,7 +7,7 @@ class Play {
 
   async run (request) {
     if (!request.isAuthorConnected()) {
-      request.reply('You need to be in a channel to request songs.')
+      await request.reply('You need to be in a channel to request songs.')
       return
     }
 
@@ -17,12 +17,7 @@ class Play {
       return
     }
 
-    // if message is 'hidden youtube'
-    if (request.command === 'hyt') {
-      await request.deleteMessage()
-    }
-
-    this.players.get(request.guildID).play(request, request.content, 'YOUTUBE')
+    await this.players.get(request.guildID).play(request, request.content, 'YOUTUBE')
   }
 }
 
