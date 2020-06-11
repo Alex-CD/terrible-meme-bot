@@ -1,7 +1,7 @@
 
 class Play {
   constructor (settings, players) {
-    this.aliases = ['play', 'hyt']
+    this.aliases = ['play']
     this.players = players
   }
 
@@ -11,6 +11,7 @@ class Play {
       return
     }
 
+    // User may be trying to resume a paused queue
     if (request.content === '') {
       await this.players.get(request.guildID).resume(request)
       return
