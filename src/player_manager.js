@@ -5,7 +5,7 @@ class PlayerManager {
     this.players = new Map()
   }
 
-  async makePlayer (guildID) {
+  makePlayer (guildID) {
     this.players.set(guildID, new Player(process.env.DEFAULT_BOT_TIMEOUT_MINUTES))
   }
 
