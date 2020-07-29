@@ -47,7 +47,7 @@ class GuildPlayer {
     }
   }
 
-  async interrupt (request, url, source) {
+  interrupt (request, url, source) {
     if (this.isPlaying && !this.isPaused) {
       // !v requeues non-local clips
       if (this.nowPlaying.source !== 'LOCAL') {
@@ -55,7 +55,7 @@ class GuildPlayer {
       }
 
       this.audioQueue.jumpQueue(url, source)
-      await this.skip(request)
+      this.skip(request)
     } else {
       this.play(request, url, source)
     }

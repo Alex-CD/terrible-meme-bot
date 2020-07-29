@@ -4,6 +4,7 @@ class Restart {
   }
 
   async run (request) {
+    console.log('KILLING PROCESS ON USER RESTART COMMEND')
     process.kill(process.pid, 'SIGINT')
   }
 }

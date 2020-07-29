@@ -8,13 +8,13 @@ class Request {
     this.command = undefined
   }
 
-  async isDirectMessage () {
+  isDirectMessage () {
     return this.message.channel.type === 'dm'
   }
 
   async joinAuthorVoiceChannel () {
     if (this.isAuthorChannelJoinable()) {
-      return this.message.member.voice.channel.join()
+      return await this.message.member.voice.channel.join()
     }
   }
 
@@ -50,20 +50,20 @@ class Request {
 
   async deleteMessage () {
     if (this.message.channel.manageable) {
-      this.message.delete()
+      await this.message.delete()
     }
   }
 
-  disconnectBot (reason) {
-    this.message.guild.me.voice.setChannel(null, reason)
+  async disconnectBot (reason) {
+    await this.message.guild.me.voice.setChannel(null, reason)
   }
 
   isAuthorConnected () {
     return this.message.member.voice.channel != null
   }
 
-  isBotInAuthorChannel () {
-    return this.message.guild.me.voice.channel === this.message.member.voice.channel
+  async isBotInAuthorChannel () {
+    return await this.message.guild.me.voice.channel === this.message.member.voice.channel
   }
 
   isBotConnectedToGuild () {
