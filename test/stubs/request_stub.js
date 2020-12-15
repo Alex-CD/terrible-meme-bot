@@ -2,7 +2,7 @@
 class RequestStub {
   constructor (message) {
     this.replies = []
-    var defaultVals = {
+    const defaultVals = {
       isConnected: false,
       text: 'Hello world',
       type: 'text',
@@ -32,10 +32,10 @@ class RequestStub {
   }
 
   trimSpaces (string) {
-    var split = string.split(' ')
-    var out = ''
+    const split = string.split(' ')
+    let out = ''
 
-    for (var i = 0; i < split.length; i++) {
+    for (let i = 0; i < split.length; i++) {
       if (split[i].length > 0) {
         out += split[i] + ' '
       }

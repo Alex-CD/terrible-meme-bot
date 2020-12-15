@@ -1,4 +1,3 @@
-const ytlist = require('youtube-playlist')
 const ytdl = require('ytdl-core')
 const ytpl = require('ytpl')
 
@@ -14,7 +13,7 @@ class AudioQueue {
 
     switch (source) {
       case 'YOUTUBE':
-        if (ytpl.validateURL(url)) {
+        if (ytpl.validateID(url)) {
           return await this.parseYoutubePlaylist(url)
         }
 
@@ -45,28 +44,27 @@ class AudioQueue {
   }
 
   normalizeYoutubeURL (url) {
-    var videoID = ''
-
-    if (url.includes('youtu.be/')) {
-      videoID = (url.split('.be/')[1]).split('?')[0]
-    } else {
-      videoID = (url.split('watch?v=')[1]).split('&')[0]
-    }
-
-    return 'https://youtube.com/watch?v=' + videoID
+    return 'https://youtube.com/watch?v=' + this.extractVideoID(url)
   }
 
   async parseYoutubePlaylist (url) {
-    var list = await ytlist(url, 'url')
+    const playlist = await ytpl(this.extractPlaylistID(url), { limit: 200 })
+    if (!playlist.items.length) {
+      return
+    }
 
+    const videos = []
+    for (let i = 0; i < playlist.items.length; i++) {
+      videos.push(playlist.items[i].shortUrl)
+    }
     // Get index in list of current video
-    var thisVideoIndex = list.data.playlist.indexOf(this.normalizeYoutubeURL(url))
-    var videos = list.data.playlist
+    let thisVideoIndex = videos.indexOf(this.normalizeYoutubeURL(url))
 
     // Queue whole playlist if can't find current video
     if (thisVideoIndex === -1) thisVideoIndex = 0
 
-    for (var i = thisVideoIndex; i < videos.length; i++) {
+    // queue everything forward of 'this video'
+    for (let i = thisVideoIndex; i < videos.length; i++) {
       this.queue(videos[i], 'YOUTUBE')
     }
 
@@ -79,6 +77,16 @@ class AudioQueue {
 
   clear () {
     this.items = []
+  }
+
+  extractVideoID (url) {
+    const urlParams = new URLSearchParams(new URL(url).search)
+    return urlParams.get('v')
+  }
+
+  extractPlaylistID (url) {
+    const urlParams = new URLSearchParams(new URL(url).search)
+    return urlParams.get('list')
   }
 }
 

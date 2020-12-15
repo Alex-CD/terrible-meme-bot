@@ -6,10 +6,10 @@ class Roll {
   }
 
   async run (request) {
-    var args = request.content.split(' ')
-    var argsInt = []
+    const args = request.content.split(' ')
+    const argsInt = []
 
-    for (var i = 0; i < args.length; i++) {
+    for (let i = 0; i < args.length; i++) {
       if (!Number.isInteger(parseInt(args[i]) || args[i] === '')) {
         request.reply('Invalid argument(s).')
         return

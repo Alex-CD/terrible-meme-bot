@@ -1,4 +1,4 @@
-var Player = require('./player')
+const Player = require('./player')
 
 class PlayerManager {
   constructor () {

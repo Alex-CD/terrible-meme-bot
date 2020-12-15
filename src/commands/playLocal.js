@@ -26,15 +26,15 @@ class PlayLocal {
       return
     }
 
-    var requestedFiles = this.audioFiles.get(request.content)
+    const requestedFiles = this.audioFiles.get(request.content)
 
     if (!requestedFiles) {
       request.reply('Unknown audio clip')
       return
     }
 
-    var player = this.players.get(request.guildID)
-    var toPlay = this.audioDir + request.content + '/' + requestedFiles[random.int(0, requestedFiles.length - 1)]
+    const player = this.players.get(request.guildID)
+    const toPlay = this.audioDir + request.content + '/' + requestedFiles[random.int(0, requestedFiles.length - 1)]
 
     request.deleteMessage()
 
@@ -46,11 +46,11 @@ class PlayLocal {
   }
 
   loadAudioFilesSync (audioDir) {
-    var newFiles = new Map()
+    const newFiles = new Map()
 
-    var directories = fs.readdirSync(audioDir)
-    for (var i = 0; i < directories.length; i++) {
-      var files = fs.readdirSync(audioDir + directories[i])
+    const directories = fs.readdirSync(audioDir)
+    for (let i = 0; i < directories.length; i++) {
+      const files = fs.readdirSync(audioDir + directories[i])
       newFiles.set(directories[i], files)
     }
 
@@ -59,10 +59,10 @@ class PlayLocal {
 
   async loadAudioFilesAsync (audioDir) {
     try {
-      var newFiles = new Map()
-      var directories = await fs.promises.readdir(audioDir)
-      for (var i = 0; i < directories.length; i++) {
-        var files = await fs.promises.readdir(audioDir + directories[i])
+      const newFiles = new Map()
+      const directories = await fs.promises.readdir(audioDir)
+      for (let i = 0; i < directories.length; i++) {
+        const files = await fs.promises.readdir(audioDir + directories[i])
         newFiles.set(directories[i], files)
       }
 
@@ -73,11 +73,11 @@ class PlayLocal {
   }
 
   printCommands (request) {
-    var out = '```Use !v [sound] to play a sound.\nAvailable commands: '
+    let out = '```Use !v [sound] to play a sound.\nAvailable commands: '
 
-    var keys = this.audioFiles.keys()
+    const keys = this.audioFiles.keys()
 
-    var key = keys.next()
+    let key = keys.next()
 
     while (!key.done) {
       out += key.value

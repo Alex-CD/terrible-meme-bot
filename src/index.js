@@ -1,6 +1,6 @@
+const path = require('path')
 const Discord = require('discord.js')
 const client = new Discord.Client()
-const path = require('path')
 
 const Router = require('./command_router')
 const PlayerManager = require('./player_manager')
@@ -8,21 +8,20 @@ const Request = require('./request')
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') })
 
-var settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX }
-
-var playerMAnager = new PlayerManager()
-
+const settings = { prefix: process.env.DEFAULT_COMMAND_PREFIX }
 process.title = process.env.PROCESS_TITLE
 
+const playerMAnager = new PlayerManager()
+
 // Import all modules from commands/
-var commands = require('require-all')({
+const commands = require('require-all')({
   dirname: path.join(__dirname, 'commands'),
   resolve: function (Command) {
     return new Command(settings, playerMAnager)
   }
 })
 
-var router = new Router(settings, playerMAnager, commands)
+const router = new Router(settings, playerMAnager, commands)
 
 client.once('ready', () => {
   console.log('Connected')

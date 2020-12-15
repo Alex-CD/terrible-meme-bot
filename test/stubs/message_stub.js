@@ -1,6 +1,6 @@
 class MessageStub {
   constructor (settings) {
-    var defaultVals = {
+    const defaultVals = {
       contents: '!test Hello world',
       type: 'text',
       author: '1234',
@@ -13,7 +13,7 @@ class MessageStub {
     this.state.sentMessages = []
     this.state.voiceChannel = '000'
 
-    var state = this.state
+    const state = this.state
 
     this.contents = this.state.contents
 

@@ -6,7 +6,7 @@ class Info {
 
   async run (request) {
     if (this.player.hasPlayer(request.guildID)) {
-      var player = this.player.get(request.guildID)
+      const player = this.player.get(request.guildID)
       if (player.state === 'PLAYING' || player.state === 'PAUSED') {
         player.printSongInfo(request)
       }

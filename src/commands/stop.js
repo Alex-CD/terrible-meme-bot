@@ -7,7 +7,7 @@ class Stop {
 
   async run (request) {
     if (request.isBotConnectedToGuild()) {
-      var player = this.players.get(request.guildID)
+      const player = this.players.get(request.guildID)
       await player.stop(request)
     }
   }

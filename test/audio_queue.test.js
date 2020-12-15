@@ -1,12 +1,12 @@
-var assert = require('chai').assert
-var describe = require('mocha').describe
-var it = require('mocha').it
-var beforeEach = require('mocha').beforeEach
+const assert = require('chai').assert
+const describe = require('mocha').describe
+const it = require('mocha').it
+const beforeEach = require('mocha').beforeEach
 
 const AudioQueue = require('../src/audio_queue')
 
 describe('AudioQueue', function () {
-  var audioQueue
+  let audioQueue
 
   beforeEach(function () {
     audioQueue = new AudioQueue()
@@ -19,12 +19,12 @@ describe('AudioQueue', function () {
     })
 
     it('Should reject an invalid URL', async function () {
-      var videosQueued = await audioQueue.add('drewarewarewaeyrdsre', 'YOUTUBE')
+      const videosQueued = await audioQueue.add('drewarewarewaeyrdsre', 'YOUTUBE')
       assert(videosQueued === null, 'method should return null')
     })
 
     it('Should reject an empty URL', async function () {
-      var videosQueued = await audioQueue.add('', 'YOUTUBE')
+      const videosQueued = await audioQueue.add('', 'YOUTUBE')
       assert(videosQueued === null, 'method should return null')
     })
 
@@ -50,22 +50,22 @@ describe('AudioQueue', function () {
 
   describe('#normalizeYoutubeURL', function () {
     it('should remove all but the video ID from a youtube URL', function () {
-      var out = audioQueue.normalizeYoutubeURL('https://www.youtube.com/watch?v=AQN2M3ngZjc&feature=youtu.be&t=5')
+      const out = audioQueue.normalizeYoutubeURL('https://www.youtube.com/watch?v=AQN2M3ngZjc&feature=youtu.be&t=5')
       assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'only the v= parameter should remain')
     })
 
     it('should leave a correct url unchanged', function () {
-      var out = audioQueue.normalizeYoutubeURL('https://www.youtube.com/watch?v=AQN2M3ngZjc')
+      const out = audioQueue.normalizeYoutubeURL('https://www.youtube.com/watch?v=AQN2M3ngZjc')
       assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'the url should be unchanged')
     })
 
     it('should change a shortened URL to a full-length URL', function () {
-      var out = audioQueue.normalizeYoutubeURL('https://youtu.be/AQN2M3ngZjc')
+      const out = audioQueue.normalizeYoutubeURL('https://youtu.be/AQN2M3ngZjc')
       assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'the URL should be full-length')
     })
 
     it('should change shortened to full-length, and remove parameters', function () {
-      var out = audioQueue.normalizeYoutubeURL('https://youtu.be/AQN2M3ngZjc?t=5')
+      const out = audioQueue.normalizeYoutubeURL('https://youtu.be/AQN2M3ngZjc?t=5')
       assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'the url should be full length, with only the video ID')
     })
   })

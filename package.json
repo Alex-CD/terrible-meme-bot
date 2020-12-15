@@ -30,7 +30,7 @@
     "require-all": "^3.0.0",
     "youtube-playlist": "^1.0.4",
     "ytdl-core": "^4.1.5",
-    "ytpl": "^2.0.1"
+    "ytpl": "^2.0.3"
   },
   "devDependencies": {
     "chai": "^4.2.0",

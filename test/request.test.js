@@ -1,14 +1,14 @@
-var assert = require('chai').assert
-var describe = require('mocha').describe
-var it = require('mocha').it
+const assert = require('chai').assert
+const describe = require('mocha').describe
+const it = require('mocha').it
 
-var MessageStub = require('./stubs/message_stub')
+const MessageStub = require('./stubs/message_stub')
 
-var Request = require('../src/request')
+const Request = require('../src/request')
 
 describe('request', function () {
   describe('#removeSpaces', function () {
-    var request = new Request(new MessageStub())
+    const request = new Request(new MessageStub())
 
     it('should remove leading spaces', function () {
       assert(request.trimSpaces(' Hi World') === 'Hi World', 'leading spaces should have been removed')
@@ -28,7 +28,7 @@ describe('request', function () {
   })
 
   describe('#trimCommand', function () {
-    var request = new Request(new MessageStub())
+    const request = new Request(new MessageStub())
 
     it('should remove the command from a string, leaving the arguments', function () {
       assert(request.trimCommand('!test hiworld') === 'hiworld', 'removed the prefix (\'!example\') from the message')
