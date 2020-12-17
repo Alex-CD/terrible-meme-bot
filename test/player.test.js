@@ -71,7 +71,7 @@ describe('player', function () {
         fs.unlinkSync(testFilePath)
       }
       try {
-        ytdl('https://www.youtube.com/watch?v=AXrHbrMrun0', { filter: 'audioonly', quality: 'lowestaudio' }).pipe(fs.createWriteStream(testFilePath))
+        ytdl('https://www.youtube.com/watch?v=jNQXAC9IVRw', { filter: 'audioonly', quality: 'lowestaudio' }).pipe(fs.createWriteStream(testFilePath))
       } catch (e) {
         assert.fail('An exception was thrown.')
       } finally {
@@ -79,7 +79,7 @@ describe('player', function () {
           fs.unlinkSync(testFilePath)
         }
       }
-
+      console.log('file exists:' + fs.existsSync(testFilePath))
       assert(fs.existsSync(testFilePath), 'The audio file should have been downloaded')
     })
   })

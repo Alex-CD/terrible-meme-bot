@@ -26,8 +26,8 @@ class GuildPlayer {
     if (source === 'YOUTUBE') {
       switch (true) {
         case videosQueued === 0:
-          request.reply('Error fetching playlist. Sorry! This is a bug with youtube.' +
-            'Rerequesting the playlist usually works.')
+          request.reply('No videos queued. Sorry! This is usually a bug with youtube. ' +
+            'Poke Alex please!')
           return
         case videosQueued === 1:
           request.reply('Song queued.')

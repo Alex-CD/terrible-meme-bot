@@ -29,7 +29,7 @@
     "random": "^2.2.0",
     "require-all": "^3.0.0",
     "youtube-playlist": "^1.0.4",
-    "ytdl-core": "^4.1.5",
+    "ytdl-core": "^4.1.7",
     "ytpl": "^2.0.3"
   },
   "devDependencies": {

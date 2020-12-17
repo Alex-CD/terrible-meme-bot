@@ -2,7 +2,6 @@
 A less serious Discord bot, powered by NodeJS and Discord.js
 
 ![Build](https://api.travis-ci.org/Alex-CD/terrible-meme-bot.svg?branch=master)
-![Deploy](https://github.com/Alex-CD/terrible-meme-bot/workflows/Deploy/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/e6541edbf92bbba970ea/maintainability)](https://codeclimate.com/github/Alex-CD/terrible-meme-bot/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e6541edbf92bbba970ea/test_coverage)](https://codeclimate.com/github/Alex-CD/terrible-meme-bot/test_coverage)
 

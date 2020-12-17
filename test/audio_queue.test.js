@@ -15,7 +15,7 @@ describe('AudioQueue', function () {
   describe('#add', function () {
     it('Should accept an address for an item, and add it to the queue', async function () {
       await audioQueue.add('https://www.youtube.com/watch?v=jNQXAC9IVRw', 'YOUTUBE')
-      assert(audioQueue.items[0].url === 'https://youtube.com/watch?v=jNQXAC9IVRw', 'YOUTUBE')
+      assert(audioQueue.items[0].url === 'https://www.youtube.com/watch?v=jNQXAC9IVRw', 'YOUTUBE')
     })
 
     it('Should reject an invalid URL', async function () {
@@ -44,29 +44,29 @@ describe('AudioQueue', function () {
 
     it('Should add the items forward of the current item, in the playlist', async function () {
       await audioQueue.add('https://www.youtube.com/watch?v=32nkdvLq3oQ&list=PL4ih7gaviWT6wn33V8zJW_jfNXMvlzSxK&index=7', 'YOUTUBE')
-      assert(audioQueue.items[0].url === 'https://youtube.com/watch?v=32nkdvLq3oQ', 'There should be more than one video queued')
+      assert(audioQueue.items[0].url === 'https://www.youtube.com/watch?v=32nkdvLq3oQ', 'The first item queued should be this')
     })
   })
 
   describe('#normalizeYoutubeURL', function () {
-    it('should remove all but the video ID from a youtube URL', function () {
+    it('should remove all but the core video url from an extended url', function () {
       const out = audioQueue.normalizeYoutubeURL('https://www.youtube.com/watch?v=AQN2M3ngZjc&feature=youtu.be&t=5')
-      assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'only the v= parameter should remain')
+      assert(out === 'https://www.youtube.com/watch?v=AQN2M3ngZjc', 'only the v= parameter should remain')
     })
 
     it('should leave a correct url unchanged', function () {
       const out = audioQueue.normalizeYoutubeURL('https://www.youtube.com/watch?v=AQN2M3ngZjc')
-      assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'the url should be unchanged')
+      assert(out === 'https://www.youtube.com/watch?v=AQN2M3ngZjc', 'the url should be unchanged')
     })
 
     it('should change a shortened URL to a full-length URL', function () {
       const out = audioQueue.normalizeYoutubeURL('https://youtu.be/AQN2M3ngZjc')
-      assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'the URL should be full-length')
+      assert(out === 'https://www.youtube.com/watch?v=AQN2M3ngZjc', 'the URL should be full-length')
     })
 
     it('should change shortened to full-length, and remove parameters', function () {
       const out = audioQueue.normalizeYoutubeURL('https://youtu.be/AQN2M3ngZjc?t=5')
-      assert(out === 'https://youtube.com/watch?v=AQN2M3ngZjc', 'the url should be full length, with only the video ID')
+      assert(out === 'https://www.youtube.com/watch?v=AQN2M3ngZjc', 'the url should be full length, with only the video ID')
     })
   })
 })

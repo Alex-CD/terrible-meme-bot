@@ -44,11 +44,11 @@ class AudioQueue {
   }
 
   normalizeYoutubeURL (url) {
-    return 'https://youtube.com/watch?v=' + this.extractVideoID(url)
+    return 'https://www.youtube.com/watch?v=' + this.extractVideoID(url)
   }
 
   async parseYoutubePlaylist (url) {
-    const playlist = await ytpl(this.extractPlaylistID(url), { limit: 200 })
+    const playlist = await ytpl(this.extractPlaylistID(url), { limit: 300 })
     if (!playlist.items.length) {
       return
     }
@@ -80,8 +80,13 @@ class AudioQueue {
   }
 
   extractVideoID (url) {
-    const urlParams = new URLSearchParams(new URL(url).search)
-    return urlParams.get('v')
+    if (url.includes('youtu.be/')) {
+      return (url.split('.be/')[1]).split('?')[0]
+    } else if (url.includes('youtube.com')) {
+      const urlParams = new URLSearchParams(new URL(url).search)
+      return urlParams.get('v')
+    }
+    return url
   }
 
   extractPlaylistID (url) {
