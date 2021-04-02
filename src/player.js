@@ -16,7 +16,7 @@ class GuildPlayer {
     this.nowPlaying = { url: '', source: '' }
   }
 
-  async play (request, url, source) {
+  async play (request, url, source, shuffle) {
     if (this.isPaused) {
       this.stop(request)
     }
@@ -34,6 +34,11 @@ class GuildPlayer {
           break
         case videosQueued > 1:
           request.reply('Enqueued ' + videosQueued + ' songs')
+
+          if (shuffle) {
+            this.audioQueue.shuffle()
+            request.reply('Shuffled playlist')
+          }
           break
         default:
           request.reply('Invalid video/playlist url')
@@ -59,6 +64,14 @@ class GuildPlayer {
     } else {
       this.play(request, url, source)
     }
+  }
+
+  async shuffle (request) {
+    if (this.audioQueue.isEmpty()) {
+      await request.reply('Cannot shuffle empty playlist')
+    }
+
+    this.audioQueue.shuffle()
   }
 
   async pause (request) {

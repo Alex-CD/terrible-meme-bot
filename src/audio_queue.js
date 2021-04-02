@@ -93,6 +93,15 @@ class AudioQueue {
     const urlParams = new URLSearchParams(new URL(url).search)
     return urlParams.get('list')
   }
+
+  shuffle () {
+    for (let i = this.items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      const temp = this.items[i]
+      this.items[i] = this.items[j]
+      this.items[j] = temp
+    }
+  }
 }
 
 module.exports = AudioQueue
