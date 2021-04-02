@@ -4,10 +4,6 @@ const it = require('mocha').it
 const beforeEach = require('mocha').beforeEach
 
 const util = require('util')
-const ytdl = require('ytdl-core')
-const fs = require('fs')
-const path = require('path')
-
 const Player = require('../src/player')
 const RequestStub = require('./stubs/request_stub')
 
@@ -60,27 +56,6 @@ describe('player', function () {
       player.isPlaying = true
       await util.promisify(setTimeout)(200)
       assert(request.state.isConnected, 'The bot should not have been disconnected')
-    })
-
-    // REGRESSION TESTS
-
-    it('should play videos ', async function () {
-      const testFilePath = path.join(__dirname, '/testVideo.mp3')
-      // Deleting test file if it exists
-      if (fs.existsSync(testFilePath)) {
-        fs.unlinkSync(testFilePath)
-      }
-      try {
-        ytdl('https://www.youtube.com/watch?v=jNQXAC9IVRw', { filter: 'audioonly', quality: 'lowestaudio' }).pipe(fs.createWriteStream(testFilePath))
-      } catch (e) {
-        assert.fail('An exception was thrown.')
-      } finally {
-        if (fs.existsSync(testFilePath)) {
-          fs.unlinkSync(testFilePath)
-        }
-      }
-      console.log('file exists:' + fs.existsSync(testFilePath))
-      assert(fs.existsSync(testFilePath), 'The audio file should have been downloaded')
     })
   })
 })

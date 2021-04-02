@@ -43,8 +43,9 @@ describe('AudioQueue', function () {
     })
 
     it('Should add the items forward of the current item, in the playlist', async function () {
-      await audioQueue.add('https://www.youtube.com/watch?v=32nkdvLq3oQ&list=PL4ih7gaviWT6wn33V8zJW_jfNXMvlzSxK&index=7', 'YOUTUBE')
-      assert(audioQueue.items[0].url === 'https://www.youtube.com/watch?v=32nkdvLq3oQ', 'The first item queued should be this')
+      await audioQueue.add('https://www.youtube.com/watch?v=LeAltgu_pbM&list=PLBGH6psvCLx46lC91XTNSwi5RPryOhhde&index=2', 'YOUTUBE')
+      console.log(audioQueue.items[0].url)
+      assert(audioQueue.items[0].url === 'https://www.youtube.com/watch?v=LeAltgu_pbM', 'The first item queued should be this')
     })
   })
 
