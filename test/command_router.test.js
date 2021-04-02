@@ -1,7 +1,7 @@
-var assert = require('chai').assert
-var describe = require('mocha').describe
-var it = require('mocha').it
-var beforeEach = require('mocha').beforeEach
+const assert = require('chai').assert
+const describe = require('mocha').describe
+const it = require('mocha').it
+const beforeEach = require('mocha').beforeEach
 const Router = require('../src/command_router')
 
 const CommandStub = require('./stubs/command_stub')
@@ -9,7 +9,7 @@ const RequestStub = require('./stubs/request_stub')
 const PlayerManagerStub = require('./stubs/player_manager_stub')
 
 describe('command_router', function () {
-  var players
+  let players
 
   beforeEach(function () {
     players = new PlayerManagerStub()
@@ -17,18 +17,18 @@ describe('command_router', function () {
 
   describe('#route', function () {
     it('should accept a command handler, and a text command', function () {
-      var commands = { test: new CommandStub(['test']) }
-      var router = new Router({ prefix: '!' }, players, commands)
+      const commands = { test: new CommandStub(['test']) }
+      const router = new Router({ prefix: '!' }, players, commands)
 
-      var request = new RequestStub({ text: '!test' })
+      const request = new RequestStub({ text: '!test' })
       router.route(request)
       assert(commands.test.hasRun, 'the correct command should have run')
     })
 
     it('should identify and run the correct command handler', function () {
-      var commands = { test1: new CommandStub(['test1']), test2: new CommandStub(['test2']) }
+      const commands = { test1: new CommandStub(['test1']), test2: new CommandStub(['test2']) }
 
-      var router = new Router({ prefix: '!' }, players, commands)
+      const router = new Router({ prefix: '!' }, players, commands)
 
       router.route(new RequestStub({ text: '!test2' }))
 
@@ -37,8 +37,8 @@ describe('command_router', function () {
     })
 
     it('should reject commands without a prefix', function () {
-      var commands = { test1: new CommandStub(['test']) }
-      var router = new Router({ prefix: '!' }, players, commands)
+      const commands = { test1: new CommandStub(['test']) }
+      const router = new Router({ prefix: '!' }, players, commands)
       router.route(new RequestStub({ text: 'REEEE  text has no prefix' }))
       assert(!commands.test1.hasRun, 'the command should have not run')
     })

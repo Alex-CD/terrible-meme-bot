@@ -77,10 +77,10 @@ class Request {
 
   // Removes any extra spaces from the message
   trimSpaces (string) {
-    var split = string.split(' ')
-    var out = ''
+    const split = string.split(' ')
+    let out = ''
 
-    for (var i = 0; i < split.length; i++) {
+    for (let i = 0; i < split.length; i++) {
       if (split[i].length > 0) {
         out += split[i] + ' '
       }

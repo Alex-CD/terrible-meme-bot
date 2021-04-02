@@ -4,7 +4,7 @@ class Ping {
   }
 
   async run (request) {
-    var diff = Date.now() - request.message.createdAt
+    const diff = Date.now() - request.message.createdAt
     await request.reply('Pong: ' + diff + 'ms')
   }
 }

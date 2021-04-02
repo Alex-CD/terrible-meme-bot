@@ -1,5 +1,6 @@
 const fs = require('fs')
 const random = require('random')
+const util = require('util')
 
 class PlayLocal {
   constructor (settings, players) {
@@ -26,15 +27,21 @@ class PlayLocal {
       return
     }
 
-    var requestedFiles = this.audioFiles.get(request.content)
+    if (!await this.guildHasAudioDir(this.audioDir, request.guildID)) {
+      console.log('creating new audio dir for guild ' + request.guildID)
+      await this.createAudioDir(this.audioDir, request.guildID)
+    }
+
+    console.log(this.audioFiles)
+    const requestedFiles = this.audioFiles.get(request.guildID).get(request.content)
 
     if (!requestedFiles) {
       request.reply('Unknown audio clip')
       return
     }
 
-    var player = this.players.get(request.guildID)
-    var toPlay = this.audioDir + request.content + '/' + requestedFiles[random.int(0, requestedFiles.length - 1)]
+    const player = this.players.get(request.guildID)
+    const toPlay = this.audioDir + request.guildID + '/' + request.content + '/' + requestedFiles[random.int(0, requestedFiles.length - 1)]
 
     request.deleteMessage()
 
@@ -46,38 +53,86 @@ class PlayLocal {
   }
 
   loadAudioFilesSync (audioDir) {
-    var newFiles = new Map()
+    // maps guild ids to maps of audio file names
+    const guildSounds = new Map()
+    const guilds = fs.readdirSync(audioDir)
 
-    var directories = fs.readdirSync(audioDir)
-    for (var i = 0; i < directories.length; i++) {
-      var files = fs.readdirSync(audioDir + directories[i])
-      newFiles.set(directories[i], files)
+    // audio dir contains a dir per guild,
+    // which contains a dir per !v command,
+    // which contains the audio files
+
+    // iterating through guilds
+    for (let g = 0; g < guilds.length; g++) {
+      const thisGuildPath = audioDir + guilds[g]
+      const thisGuildCommands = fs.readdirSync(thisGuildPath)
+
+      const thisGuildSounds = new Map()
+      // iterating through each guild's commands
+      for (let c = 0; c < thisGuildCommands.length; c++) {
+        const audioFiles = fs.readdirSync(thisGuildPath + '/' + thisGuildCommands[c])
+        thisGuildSounds.set(thisGuildCommands[c], audioFiles)
+      }
+
+      guildSounds.set(guilds[g], thisGuildSounds)
     }
 
-    return newFiles
+    return guildSounds
   }
 
   async loadAudioFilesAsync (audioDir) {
     try {
-      var newFiles = new Map()
-      var directories = await fs.promises.readdir(audioDir)
-      for (var i = 0; i < directories.length; i++) {
-        var files = await fs.promises.readdir(audioDir + directories[i])
-        newFiles.set(directories[i], files)
+      // maps guild ids to maps of audio file names
+      const guildSounds = new Map()
+      const guilds = await fs.promises.readdir(audioDir)
+
+      // audio dir contains a dir per guild,
+      // which contains a dir per !v command,
+      // which contains the audio files
+
+      // iterating through guilds
+      for (let g = 0; g < guilds.length; g++) {
+        const thisGuildPath = audioDir + guilds[g]
+        const thisGuildCommands = await fs.promises.readdir(thisGuildPath)
+
+        const thisGuildSounds = new Map()
+        // iterating through each guild's commands
+        for (let c = 0; c < thisGuildCommands.length; c++) {
+          const audioFiles = await fs.promises.readdir(thisGuildPath + '/' + thisGuildCommands[c])
+          thisGuildSounds.set(thisGuildCommands[c], audioFiles)
+        }
+
+        guildSounds.set(guilds[g], thisGuildSounds)
       }
 
-      return newFiles
+      return guildSounds
     } catch (error) {
       console.log('ERORR: LocalScan - ' + error)
     }
   }
 
+  async guildHasAudioDir (audioDir, guildID) {
+    try {
+      await fs.promises.access(audioDir + guildID)
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
+  async createAudioDir (audioDir, guildID) {
+    try {
+      await util.promisify(fs.mkdir)(audioDir + guildID + '/')
+    } catch (error) {
+      console.log('failed to create new audio dir for guild ' + error)
+    }
+  }
+
   printCommands (request) {
-    var out = '```Use !v [sound] to play a sound.\nAvailable commands: '
+    let out = '```Use !v [sound] to play a sound.\nAvailable commands: '
 
-    var keys = this.audioFiles.keys()
+    const keys = this.audioFiles.keys()
 
-    var key = keys.next()
+    let key = keys.next()
 
     while (!key.done) {
       out += key.value

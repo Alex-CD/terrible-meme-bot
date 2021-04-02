@@ -1,4 +1,4 @@
-var AudioQueue = require('./audio_queue')
+const AudioQueue = require('./audio_queue')
 
 const ytdl = require('ytdl-core')
 
@@ -16,24 +16,29 @@ class GuildPlayer {
     this.nowPlaying = { url: '', source: '' }
   }
 
-  async play (request, url, source) {
+  async play (request, url, source, shuffle) {
     if (this.isPaused) {
       this.stop(request)
     }
 
-    var videosQueued = await this.audioQueue.add(url, source)
+    const videosQueued = await this.audioQueue.add(url, source)
 
     if (source === 'YOUTUBE') {
       switch (true) {
         case videosQueued === 0:
-          request.reply('Error fetching playlist. Sorry! This is a bug with youtube.' +
-            'Rerequesting the playlist usually works.')
+          request.reply('No videos queued. Sorry! This is usually a bug with youtube. ' +
+            'Poke Alex please!')
           return
         case videosQueued === 1:
           request.reply('Song queued.')
           break
         case videosQueued > 1:
           request.reply('Enqueued ' + videosQueued + ' songs')
+
+          if (shuffle) {
+            this.audioQueue.shuffle()
+            request.reply('Shuffled playlist')
+          }
           break
         default:
           request.reply('Invalid video/playlist url')
@@ -42,7 +47,7 @@ class GuildPlayer {
     }
 
     if (!this.isPlaying) {
-      var connection = await request.joinAuthorVoiceChannel()
+      const connection = await request.joinAuthorVoiceChannel()
       await this.playNext(request, connection)
     }
   }
@@ -61,10 +66,18 @@ class GuildPlayer {
     }
   }
 
+  async shuffle (request) {
+    if (this.audioQueue.isEmpty()) {
+      await request.reply('Cannot shuffle empty playlist')
+    }
+
+    this.audioQueue.shuffle()
+  }
+
   async pause (request) {
     try {
       if (this.isPlaying && !this.isPaused) {
-        var connection = await this.getConnection(request)
+        const connection = await this.getConnection(request)
         await connection.dispatcher.pause()
 
         this.isPaused = true
@@ -76,7 +89,7 @@ class GuildPlayer {
 
   async resume (request) {
     if (this.isPlaying && this.isPaused) {
-      var connection = await this.getConnection(request)
+      const connection = await this.getConnection(request)
       if (connection) {
         await connection.dispatcher.resume()
 
@@ -90,7 +103,7 @@ class GuildPlayer {
   }
 
   async getConnection (request) {
-    var thisConnection = await request.message.client.voice.connections.filter((connection) => {
+    const thisConnection = await request.message.client.voice.connections.filter((connection) => {
       return connection.channel.id === request.message.guild.me.voice.channel.id
     })
     return thisConnection.first()
@@ -98,7 +111,7 @@ class GuildPlayer {
 
   async skip (request) {
     if (this.isPlaying || this.isPaused) {
-      var connection = await this.getConnection(request)
+      const connection = await this.getConnection(request)
       await connection.dispatcher.end()
     }
   }
@@ -108,7 +121,7 @@ class GuildPlayer {
     this.isPlaying = false
     this.isPaused = false
 
-    var connection = await this.getConnection(request)
+    const connection = await this.getConnection(request)
     if (connection.dispatcher) {
       await connection.dispatcher.end()
     }
@@ -120,7 +133,7 @@ class GuildPlayer {
     this.volume = volume / 100.0
 
     try {
-      var connection = await this.getConnection(request)
+      const connection = await this.getConnection(request)
       if (connection.dispatcher !== undefined) {
         await connection.dispatcher.setVolume(this.volume)
       }
@@ -136,7 +149,7 @@ class GuildPlayer {
       this.waitToDisconnect(request)
       return
     }
-    var toPlay = this.audioQueue.get()
+    const toPlay = this.audioQueue.get()
 
     this.nowPlaying.url = toPlay.url
     this.nowPlaying.source = toPlay.source
@@ -158,7 +171,7 @@ class GuildPlayer {
     try {
       console.log('INFO:PLAYING - ' + this.nowPlaying)
       const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' })
-      var dispatcher = await connection.play(stream)
+      const dispatcher = await connection.play(stream)
       dispatcher.setVolume(this.volume)
 
       this.nowPlaying.source = 'YOUTUBE'
@@ -173,14 +186,14 @@ class GuildPlayer {
       })
     } catch (error) {
       console.log('ERORR: YT - ' + this.nowPlaying + '\n' + error)
-      var newConnection = await request.joinAuthorVoiceChannel()
+      const newConnection = await request.joinAuthorVoiceChannel()
       this.playNext(request, newConnection)
     }
   }
 
   async playLocal (request, url, connection) {
     try {
-      var dispatcher = await connection.play(url)
+      const dispatcher = await connection.play(url)
       dispatcher.setVolume(this.volume)
 
       dispatcher.on('finish', async () => {
@@ -196,19 +209,19 @@ class GuildPlayer {
   }
 
   async printSongInfo (request) {
-    var info = await ytdl.getBasicInfo(this.nowPlaying.url)
+    const info = await ytdl.getBasicInfo(this.nowPlaying.url)
 
     if (info.title === undefined || isNaN(info.length_seconds)) return
 
-    var length = this.makeVideoLengthReadable(info.length_seconds)
+    const length = this.makeVideoLengthReadable(info.length_seconds)
 
-    var songInfoString = info.title + '\n' + length
+    const songInfoString = info.title + '\n' + length
     request.reply('```Now Playing:\n' + songInfoString + '```')
   }
 
   makeVideoLengthReadable (lengthSeconds) {
-    var minutes = Math.floor(lengthSeconds / 60)
-    var seconds = lengthSeconds % 60
+    const minutes = Math.floor(lengthSeconds / 60)
+    let seconds = lengthSeconds % 60
 
     if (seconds < 10) {
       seconds = '0' + seconds
@@ -218,13 +231,13 @@ class GuildPlayer {
   }
 
   async waitToDisconnect (request) {
-    var thisFinishTime = Date.now()
+    const thisFinishTime = Date.now()
     this.lastFinishTime = thisFinishTime
 
-    var parent = this
+    const parent = this
 
     // Check every second if bot should disconnect, or stop waiting
-    var interval = setInterval(function () {
+    const interval = setInterval(function () {
       // Stop waiting if bot activity happens.
       if (thisFinishTime !== parent.lastFinishTime || parent.isPlaying) {
         clearInterval(interval)
