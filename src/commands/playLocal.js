@@ -22,17 +22,16 @@ class PlayLocal {
       return
     }
 
-    if (!request.isAuthorConnected()) {
-      request.reply('You need to be in a voice channel to play audio')
-      return
-    }
-
     if (!await this.guildHasAudioDir(this.audioDir, request.guildID)) {
       console.log('creating new audio dir for guild ' + request.guildID)
       await this.createAudioDir(this.audioDir, request.guildID)
     }
 
-    console.log(this.audioFiles)
+    if (!request.isAuthorConnected()) {
+      request.reply('You need to be in a voice channel to play audio')
+      return
+    }
+
     const requestedFiles = this.audioFiles.get(request.guildID).get(request.content)
 
     if (!requestedFiles) {
@@ -130,7 +129,7 @@ class PlayLocal {
   printCommands (request) {
     let out = '```Use !v [sound] to play a sound.\nAvailable commands: '
 
-    const keys = this.audioFiles.keys()
+    const keys = this.audioFiles.get(request.guildID).keys()
 
     let key = keys.next()
 
