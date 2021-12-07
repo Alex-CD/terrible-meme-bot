@@ -5,6 +5,9 @@ A less serious Discord bot, powered by NodeJS and Discord.js
 [![Maintainability](https://api.codeclimate.com/v1/badges/e6541edbf92bbba970ea/maintainability)](https://codeclimate.com/github/Alex-CD/terrible-meme-bot/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e6541edbf92bbba970ea/test_coverage)](https://codeclimate.com/github/Alex-CD/terrible-meme-bot/test_coverage)
 
+# NOTE: This project has moved to gitlab, and this page has been archived
+# https://gitlab.com/Alex-CD/alexcdev-site
+
 
 
 ## Features
