@@ -6,7 +6,7 @@ class About {
   async run (request) {
     const name = process.env.npm_package_name
     const version = process.env.npm_package_version
-    const repositoryURL = 'github.com/Alex-CD/terrible-meme-bot'
+    const repositoryURL = 'https://gitlab.com/Alex-CD/terrible-meme-bot'
 
     const uptime = this.secondsToDaysHoursSeconds(Math.floor(process.uptime()))
 
